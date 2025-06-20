@@ -1,54 +1,18 @@
-module.exports.config = {
-    name: "war",
-    version: "1.0.0",
-    hasPermssion: 2,
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    description: "War in group boxchat",
-    commandCategory: "group",
-    usages: "bold war",
-    cooldowns: 10,
-    dependencies: {
-        "fs-extra": "",
-        "axios": ""
-    }
-}
+module.exports.config = { name: "war", version: "3.0.0", hasPermssion: 0, credits: "নূর মোহাম্মদ ", description: "Funny roast war against tagged user with control", commandCategory: "fun", usages: "@mention", cooldowns: 10 };
 
-module.exports.run = async function({ api, args, Users, event}) {
- var mention = Object.keys(event.mentions)[0];
-    
- let name =  event.mentions[mention];
-    var arraytag = [];
-        arraytag.push({id: mention});
-    var a = function (a) { api.sendMessage(a, event.threadID); }
-a("Listen to your father, kids !");
-setTimeout(() => {a({body: "F*ck your mother" })}, 3000);
-setTimeout(() => {a({body: "You little brats come out to listen to your father curse"})}, 5000);
-setTimeout(() => {a({body: "Quick show the dogs" })}, 7000);
-setTimeout(() => {a({body: "Show your father's soul" })}, 9000);
-setTimeout(() => {a({body: "Do you guys like war so much?" })}, 12000);
-setTimeout(() => {a({body: "Damn you guys too" })}, 15000);
-setTimeout(() => {a({body: "Give your father the age of war" })}, 17000);
-setTimeout(() => {a({body: "Hurry up and curse each other with me" })}, 20000);
-setTimeout(() => {a({body: "Are the bad boys wrinkling their noses up to wage war on your father?" })}, 23000);
-setTimeout(() => {a({body: "I fuck your mother" })}, 25000);
-setTimeout(() => {a({body: "Delicious then yawn your mother up" })}, 28500);
-setTimeout(() => {a({body: "Your father shot you to death by rapping" })}, 31000);
-setTimeout(() => {a({body: "Please age eat me ?" })}, 36000);
-setTimeout(() => {a({body: "If it's delicious, eat your dad" })}, 39000);
-setTimeout(() => {a({body: "Before that, please give me a break for 1 minute" })}, 40000);
-setTimeout(() => {a({body: "Please allow me to start" })}, 65000);
-setTimeout(() => {a({body: "First of all, I would like to fuck you from top to bottom" })}, 70000);
-setTimeout(() => {a({body: "I fuck from cunt hole to pussy cleavage" })}, 75000);
-setTimeout(() => {a({body: "The cunt is as big as a buffalo's cunt masturbating a sewer pipe" })}, 80000);
-setTimeout(() => {a({body: "I'm sure 2 guys like me aren't enough to fill your ass hole" })}, 85000);
-setTimeout(() => {a("I'm tired and don't curse anymore")} , 90000);
-setTimeout(() => {a({body: "Come on boss update the lyric, let's continue the war" })}, 95000);
-setTimeout(() => {a({body: "Thank you for listening to me war" })}, 100000);
-setTimeout(() => {a({body: "Goodbye and see you in the next program" })}, 105000);
-setTimeout(() => {a({body: "Good bye 🥺"})} , 115000);
+const activeWars = new Set();
 
+module.exports.run = async function ({ api, event, args }) { const mention = Object.keys(event.mentions)[0]; if (!mention) return api.sendMessage("😎 কারে roast করবো? ট্যাগ তো কর ভাই!", event.threadID);
 
+const threadID = event.threadID; const name = event.mentions[mention]; if (activeWars.has(threadID)) return api.sendMessage("⚠️ এখনই একটা roast চলছে! আগে ওটা শেষ হোক।", threadID);
 
+activeWars.add(threadID);
 
-  
-  }
+const roasts = [ 😂 ${name}, তোর বুদ্ধি দেখে তো Google-ও আত্মহত্যা করে!, 🤣 ${name}, তুই এত বোকারামি করিস, পাসওয়ার্ড দিলেও \"1234\"!, 😆 ${name}, তোর মুখ দেখে TikTok-ও বলছে \"Filter not found\"!, 🤓 ${name}, তোর হাসি এত বাজে, Joker-ও রিটায়ার করতেছে!, 🐷 ${name}, তোকে roast করলেই খুশি পাই!, 🧠 ${name}, তোর IQ দিয়ে কেউ বাল্ব জ্বালাতে পারবে না!, 💩 ${name}, তুই Joke না ভাই, পুরো বাথরুম ফেইল!, 🪳 ${name}, তোকে দেখলে Cockroach-এরও দুঃখ লাগে!, 🧨 ${name}, তুই এমন একটা বিস্ফোরক, যেটা শুধু নিজের জীবন নষ্ট করে!, 🎤 ${name}, তুই গান গাইলে ভলকানো ফেটে যায়!, 🤖 ${name}, তুই AI না ভাই, পুরা BUG SYSTEM!, ✨ ${name}, এই ছিলো তোর জন্য আজকের স্পেশাল roast night!, 😎 আবার আসিস roast খাইতে, নূর মোহাম্মদ অনলাইন থাকলেই হবে! ];
+
+for (let i = 0; i < roasts.length; i++) { setTimeout(() => { if (!activeWars.has(threadID)) return; api.sendMessage({ body: roasts[i], mentions: [{ id: mention }] }, threadID); if (i === roasts.length - 1) activeWars.delete(threadID); }, i * 3000); } };
+
+module.exports.handleEvent = function ({ api, event }) { const { body, threadID } = event; if (!body) return;
+
+const lower = body.toLowerCase(); if (lower.startsWith("/stopwar")) { if (activeWars.has(threadID)) { activeWars.delete(threadID); return api.sendMessage("🛑 Roast বন্ধ করে দেয়া হয়েছে!", threadID); } else { return api.sendMessage("❌ এই চ্যাটে তো কোনো roast চলছেই না!", threadID); } } };
+
