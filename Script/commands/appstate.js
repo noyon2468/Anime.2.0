@@ -2,29 +2,29 @@ module.exports.config = {
   name: "appstate",
   version: "1.0.0",
   hasPermssion: 2,
-  credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-  description: "refresh appstate.json",
+  credits: "CYBER TEAM + Customized by ChatGPT",
+  description: "Refresh appstate.json file",
   commandCategory: "Admin",
   usages: "appstate",
-  cooldowns: 5,
-  dependencies: {
-  }
+  cooldowns: 5
 };
 
-module.exports.run = async function ({ api, event, args }) {
+module.exports.run = async function ({ api, event }) {
   const fs = require("fs-extra");
-  const permission = ["100082395531611", "100086680386976"];
-	if (!permission.includes(event.senderID)) return api.sendMessage("You don't have permission to use this command", event.threadID, event.messageID);
-  let appstate = api.getAppState();
-  // convert JSON object to a string
-  const data = JSON.stringify(appstate);
-  // write file to disk
-  fs.writeFile(`${__dirname}/../../appstate.json`, data, 'utf8', (err) => {
-    if (err) {
-      return api.sendMessage(`Error writing file: ${err}`, event.threadID);
-    } else {
-      return api.sendMessage(`Refreshed appstate successfully`, event.threadID);
-    }
-  });
+  const allowedUID = "100035389598342"; // Nur মোহাম্মদ UID
 
-}
+  if (event.senderID !== allowedUID)
+    return api.sendMessage("❌ শুধুমাত্র নূর মোহাম্মদ এই কমান্ড ব্যবহার করতে পারবেন!", event.threadID, event.messageID);
+
+  try {
+    const appstate = api.getAppState();
+    const data = JSON.stringify(appstate, null, 2);
+
+    fs.writeFile(`${__dirname}/../../appstate.json`, data, 'utf8', (err) => {
+      if (err) return api.sendMessage(`❌ ফাইল লেখার সময় সমস্যা হয়েছে:\n${err}`, event.threadID);
+      return api.sendMessage("✅ Appstate সফলভাবে রিফ্রেশ করা হয়েছে!", event.threadID);
+    });
+  } catch (e) {
+    return api.sendMessage(`❌ সমস্যা হয়েছে:\n${e.message}`, event.threadID);
+  }
+};
