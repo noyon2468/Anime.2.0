@@ -1,26 +1,54 @@
 const fs = require("fs");
+const schedule = require("node-schedule");
+
 module.exports.config = {
   name: "tea",
-    version: "1.0.1",
+  version: "2.0.0",
   hasPermssion: 0,
-  credits: "𝐏𝐫𝐢𝐲𝐚𝐧𝐬𝐡 𝐑𝐚𝐣𝐩𝐮𝐭", 
-  description: "hihihihi",
+  credits: "নূর মোহাম্মদ + ChatGPT",
+  description: "মজার চা রিয়েকশন + প্রতিদিন ভোরে চা অটো",
   commandCategory: "no prefix",
-  usages: "tea",
-    cooldowns: 5, 
+  usages: "",
+  cooldowns: 2
 };
 
-module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
-  var { threadID, messageID } = event;
-  if (event.body.indexOf("tea")==0 || event.body.indexOf("Tea")==0 || event.body.indexOf("Cha")==0 || event.body.indexOf("চা")==0) {
-    var msg = {
-        body: "ai Lo Bby ☕",
-        attachment: fs.createReadStream(__dirname + `/noprefix/tea.mp4`)
-      }
-      api.sendMessage(msg, threadID, messageID);
-    api.setMessageReaction("🫖", event.messageID, (err) => {}, true)
+// ☕ Funny Tea Reactions
+const funnyReplies = {
+  "চিনি দিছি": "আরে বাহ! মিষ্টি লাগবো এবার 💖",
+  "দুধ থাকবে": "অবশ্যই থাকবে! 🐄 চা জমে যাবে!",
+  "লাল চা": "ওহহ, ক্লাসি চা পানকারী আপনি! 🍂",
+  "চা": "নাও Bby ☕ চা খাও 💛"
+};
+
+module.exports.handleEvent = function({ api, event }) {
+  const { threadID, messageID, body } = event;
+  if (!body) return;
+  const text = body.toLowerCase();
+
+  for (let key in funnyReplies) {
+    if (text.includes(key)) {
+      api.sendMessage(funnyReplies[key], threadID, messageID);
+      api.setMessageReaction("🫖", messageID, () => {}, true);
+      return;
     }
   }
-  module.exports.run = function({ api, event, client, __GLOBAL }) {
+};
 
-  }
+// ☀️ Auto Morning Tea Scheduler
+module.exports.onLoad = ({ api }) => {
+  schedule.scheduleJob('30 0 * * *', async () => { // ⏰ BD Time 6:30 AM (UTC+6)
+    const threads = global.data.allThreadID || [];
+
+    const msg = {
+      body: "🌄 শুভ সকাল! নাও চা খাও 🍵\n\n- নূর মোহাম্মদ এর পক্ষ থেকে",
+      attachment: fs.createReadStream(__dirname + `/noprefix/tea.mp4`)
+    };
+
+    for (const threadID of threads) {
+      api.sendMessage(msg, threadID);
+    }
+  });
+};
+
+// optional run
+module.exports.run = () => {};
