@@ -1,62 +1,51 @@
 module.exports.config = {
   name: "autoreact",
-  version: "1.1.1",
+  version: "1.1.2",
   hasPermission: 0,
-  credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-  description: "Bot React",
+  credits: "CYBER BOT TEAM + Modified by নূর মোহাম্মদ",
+  description: "Bot auto reacts based on message content",
   commandCategory: "No Prefix",
-  usages: '[]',
-  cooldowns: 0,
+  usages: "[]",
+  cooldowns: 0
 };
-const fs = require("fs");
-module.exports.handleEvent = function({ api, event, client, __GLOBAL }) {
-  var { threadID, messageID } = event;
-  let react = event.body.toLowerCase();
-  if(react.includes("Soul") || react.includes("soul")) {
-    var msg = {
-        body: ""
-      }
-      api.sendMessage(msg, threadID, messageID);
-    api.setMessageReaction("🖤", event.messageID, (err) => {}, true)
-          };
 
-    if(react.includes("mahal") || react.includes("Krishna") || react.includes("flag") ||  react.includes("Flag") || react.includes("krishna") || react.includes("Mahakal") || react.includes("mahakal") || react.includes("Mahadev") || react.includes("mahadev") || react.includes("Ram") || react.includes("ram") || react.includes("Love") || react.includes("love") || react.includes("lab") || react.includes("lab") || react.includes("😊") || react.includes("ilove") || react.includes("Ilove") || react.includes("iLove") || react.includes("ilab") || react.includes("iLab") || react.includes("Ilab") || react.includes("labyu") || react.includes("Labyu") || react.includes("kiss") || react.includes("Kiss") || react.includes("yie") || react.includes("Krass") || react.includes("krass") || react.includes("kras") || react.includes("Krass") || react.includes("crush") || react.includes("crush") || react.includes("ligawan") || react.includes("kilig") || react.includes("fuck") || react.includes("Fuck") || react.includes("Kinikilig") || react.includes("Kilig") || react.includes("😗") || react.includes("😙") || react.includes("😘") || react.includes("😚") || react.includes("ugh") || react.includes("Ugh") || react.includes("sige pa") || react.includes("Sige pa") || react.includes("ullash") || react.includes("@Ullash ッ") || react.includes("sex") || react.includes("Sex") || react.includes("☺") || react.includes("porn") || react.includes("Porn") || react.includes("kantotan") || react.includes("Kantotan") || react.includes("Iyotan") || react.includes("Iyutan") || react.includes("iyotan") || react.includes("iyutan") || react.includes("pasend") || react.includes("Pasend") || react.includes("Iyut") || react.includes("Iyot") || react.includes("iyot") || react.includes("iyut") || react.includes("eut") || react.includes("Eut") || react.includes("eut") || react.includes("😍") || react.includes("shet") || react.includes("Shet") || react.includes("send") || react.includes("Send") || react.includes("baby") || react.includes("Baby") || react.includes("babe") || react.includes("Babe") || react.includes("babi") || react.includes("Baby") || react.includes("bby") || react.includes("Bby") || react.includes("kantot") || react.includes("Kantot") || react.includes("manyak") || react.includes("libog") || react.includes("Libog") || react.includes("horn") || react.includes("Horn") || react.includes("abno") || react.includes("Abno") || react.includes("malibog") || react.includes("labs") || react.includes("Labs") || react.includes("pekpek") || react.includes("Pekpek") || react.includes("@তোগো চাচ্চু মার্ক জাকারবার্গ") || react.includes("Pepe") || react.includes("🤭") || react.includes("🥰") || react.includes("puke") || react.includes("Puke") || react.includes("bilat") || react.includes("Bilat") || react.includes("puday") || react.includes("Puday") || react.includes("finger") || react.includes("Finger") || react.includes("fifinger") || react.includes("pipinger") || react.includes("Pipinger") || react.includes("pinger") || react.includes("Pinger") || react.includes("mwah") || react.includes("Mwah") || react.includes("mwuah") || react.includes("Mwuah") || react.includes("angel") || react.includes("Angel") || react.includes("jordan") || react.includes("Marry") || react.includes("😇") || react.includes("🤡")) {
-      var lab = {
-        body: ""
-      }
-      api.sendMessage(lab, threadID, messageID);
-    api.setMessageReaction("❤️", event.messageID, (err) => {}, true)
-          };
-    if(react.includes("sakit") || react.includes("Sakit") || react.includes("saket") || react.includes("Saket") || react.includes("peyn") || react.includes("Peyn") || react.includes("Pain") || react.includes("mamatay") || react.includes("Mamatay") || react.includes("ayaw ko na") || react.includes("Ayaw ko na") || react.includes("saktan") || react.includes("Saktan") || react.includes("Sasaktan") || react.includes("sasaktan") || react.includes("sad") || react.includes("Sad") || react.includes("malungkot") || react.includes("Malungkot") || react.includes(" 😥") || react.includes("😰") || react.includes("😨") || react.includes("😢") || react.includes(":(") || react.includes("😔") || react.includes("😞") || react.includes("depress") || react.includes("stress") || react.includes("Stress") || react.includes("Depress") || react.includes("depression") || react.includes("Depression") || react.includes("kalungkutan") || react.includes("Kalungkutan") || react.includes("😭")) {
-      var sad = {
-        body: ""
-      }
-      api.sendMessage(sad, threadID, messageID);
-    api.setMessageReaction("😢", event.messageID, (err) => {}, true)
-          };
-  if(react.includes("India") || react.includes("india") || react.includes("bharat") || react.includes("Bharat")) {
-      var flag = {
-        body: ""
-      }
-      api.sendMessage(flag, threadID, messageID);
-    api.setMessageReaction("🇧🇩", event.messageID, (err) => {}, true)
-          };
-  if(react.includes("eve") || react.includes("Eve") || react.includes("morning") || react.includes("Morning") || react.includes("afternoon") || react.includes("Afternoon") || react.includes("evening") || react.includes("eat") || react.includes("Eat") || react.includes("night") || react.includes("nyt") || react.includes("Night") || react.includes("Nyt")) {
-      var heart = {
-        body: ""
-      }
-      api.sendMessage(heart, threadID, messageID);
-    api.setMessageReaction("❤", event.messageID, (err) => {}, true)
-            };
-  if(react.includes("wow") || react.includes("robot")) {
-      var heart = {
-        body: ""
-      }
-      api.sendMessage(heart, threadID, messageID);
-    api.setMessageReaction("😮", event.messageID, (err) => {}, true)
-            }
-        }
-  module.exports.run = function({ api, event, client, __GLOBAL }) {
+module.exports.handleEvent = function({ api, event }) {
+  const { threadID, messageID, body } = event;
+  if (!body) return;
 
+  const msg = body.toLowerCase();
+
+  const reactList = [
+    { keywords: ["soul"], emoji: "🖤" },
+    { 
+      keywords: [
+        "mahal", "krishna", "mahakal", "mahadev", "ram", "love", "lab", "ilove", "labyu", "kiss", "crush", "kilig", 
+        "fuck", "@নূর মোহাম্মদ", "sex", "porn", "kantot", "iyotan", "pasend", "iyot", "eut", "😍", "shet", "send", 
+        "baby", "babe", "babi", "bby", "manyak", "libog", "horn", "abno", "malibog", "labs", "pekpek", "🤭", "🥰", 
+        "puke", "bilat", "puday", "finger", "pipinger", "pinger", "mwah", "mwuah", "angel", "jordan", "marry", "😇", "🤡"
+      ],
+      emoji: "❤️"
+    },
+    { 
+      keywords: [
+        "sakit", "saket", "pain", "mamatay", "ayaw ko na", "saktan", "sad", "malungkot", "😥", "😰", "😨", "😢", ":(", 
+        "😔", "😞", "depress", "stress", "depression", "kalungkutan", "😭"
+      ],
+      emoji: "😢"
+    },
+    { keywords: ["india", "bharat"], emoji: "🇧🇩" },
+    { keywords: ["eve", "morning", "afternoon", "evening", "eat", "night", "nyt"], emoji: "❤" },
+    { keywords: ["wow", "robot"], emoji: "😮" }
+  ];
+
+  for (const react of reactList) {
+    if (react.keywords.some(keyword => msg.includes(keyword))) {
+      api.setMessageReaction(react.emoji, messageID, (err) => {}, true);
+      break;
+    }
   }
+};
 
+module.exports.run = function() {
+  // No manual command
+};
