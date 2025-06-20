@@ -1,37 +1,60 @@
 module.exports.config = {
-	name: "wiki",
-	version: "1.0.1",
-	hasPermssion: 0,
-	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-	description: "Find all the information you need through Wikipedia",
-	commandCategory: "study",
-	usages: "[en] [information needed search]",
-	cooldowns: 1,
-	dependencies: {
-        "wikijs": ""
-    }
-}
+  name: "wiki",
+  version: "2.0.0",
+  hasPermssion: 0,
+  credits: "CYBER BOT TEAM + ChatGPT",
+  description: "Search topic on Wikipedia with image and summary",
+  commandCategory: "study",
+  usages: "[en/bn] [topic]",
+  cooldowns: 2,
+  dependencies: { "wikijs": "" }
+};
 
 module.exports.languages = {
-    "vi": {
-        "missingInput": "Nội dung cần tìm kiếm không được để trống!",
-        "returnNotFound": "Không tìm thấy nội dung %1"
-    },
-    "en": {
-        "missingInput": "Enter what you need to search for.",
-        "returnNotFound": "Can't find %1"
-    }
-}
+  "en": {
+    "missingInput": "Please enter a topic to search!",
+    "returnNotFound": "❌ No result found for: %1"
+  }
+};
 
-module.exports.run = ({ event, args, api, getText }) => {
-    const wiki = (global.nodemodule["wikijs"]).default;
-    let content = args.join(" ");
-    let url = 'https://en.wikipedia.org/w/api.php';
-    if (args[0] == "en") {
-        url = 'https://en.wikipedia.org/w/api.php'; 
-        content = args.slice(1, args.length);
-    }
-    if (!content) return api.sendMessage(getText("missingInput"), event.threadID, event.messageID);
-    return wiki({ apiUrl: url }).page(content).catch(() => api.sendMessage(getText("returnNotFound", content), event.threadID, event.messageID)).then(page => (typeof page != 'undefined') ? Promise.resolve(page.summary()).then(val => api.sendMessage(val, event.threadID, event.messageID)) : '');
+module.exports.run = async ({ event, args, api, getText }) => {
+  const wiki = (global.nodemodule["wikijs"]).default;
+  const lang = (args[0] === "bn" || args[0] === "en") ? args.shift() : "en";
+  const query = args.join(" ");
+  const { threadID, messageID } = event;
 
-}
+  if (!query) return api.sendMessage(getText("missingInput"), threadID, messageID);
+
+  const apiUrl = lang === "bn"
+    ? "https://bn.wikipedia.org/w/api.php"
+    : "https://en.wikipedia.org/w/api.php";
+
+  try {
+    const page = await wiki({ apiUrl }).page(query);
+    const summary = await page.summary();
+    const url = await page.url();
+    const images = await page.images();
+    const image = images.find(img => /\.(jpg|jpeg|png)$/i.test(img));
+
+    let msg = `📚 Wikipedia Result (${lang.toUpperCase()})\n\n🔎 Topic: ${query}\n\n📝 ${summary.length > 1800 ? summary.slice(0, 1800) + "..." : summary}\n\n🔗 More Info: ${url}`;
+
+    if (image) {
+      const axios = require("axios");
+      const fs = require("fs-extra");
+      const imgPath = __dirname + "/cache/wiki_img.jpg";
+      const imgData = (await axios.get(image, { responseType: 'arraybuffer' })).data;
+      fs.writeFileSync(imgPath, Buffer.from(imgData, "utf-8"));
+
+      return api.sendMessage(
+        { body: msg, attachment: fs.createReadStream(imgPath) },
+        threadID,
+        () => fs.unlinkSync(imgPath),
+        messageID
+      );
+    } else {
+      return api.sendMessage(msg, threadID, messageID);
+    }
+  } catch (err) {
+    return api.sendMessage(getText("returnNotFound", query), threadID, messageID);
+  }
+};
