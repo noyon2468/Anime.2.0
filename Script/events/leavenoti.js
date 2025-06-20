@@ -1,7 +1,7 @@
 module.exports.config = {
   name: "leave",
   eventType: ["log:unsubscribe"],
-  version: "1.1.0",
+  version: "1.1.1",
   credits: "নূর মোহাম্মদ",
   description: "কেউ গ্রুপ ছাড়লে কাস্টম বিদায়ী মেসেজ দেয়",
   dependencies: {
@@ -27,7 +27,12 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
   const { threadID, logMessageData, author } = event;
   const leftUID = logMessageData.leftParticipantFbId;
 
-  if (leftUID == api.getCurrentUserID()) return;
+  // DEBUG: UID log
+  console.log("⬅️ গ্রুপ ত্যাগ করেছেন:", leftUID);
+  console.log("🤖 বটের UID:", api.getCurrentUserID());
+
+  // আগের চেক বাদ: বট নিজে গেলেও মেসেজ যাবে এখন
+  // if (leftUID == api.getCurrentUserID()) return;
 
   const time = moment.tz("Asia/Dhaka").format("DD/MM/YYYY || HH:mm:ss");
   const hours = parseInt(moment.tz("Asia/Dhaka").format("HH"));
@@ -46,6 +51,9 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
     .replace(/\{type}/g, type)
     .replace(/\{session}/g, session)
     .replace(/\{time}/g, time);
+
+  // DEBUG: Final Message
+  console.log("📨 পাঠানো মেসেজ:", msg);
 
   const gifFolder = join(__dirname, "cache", "leaveGif", "randomgif");
   const gifFiles = existsSync(gifFolder) ? readdirSync(gifFolder) : [];
