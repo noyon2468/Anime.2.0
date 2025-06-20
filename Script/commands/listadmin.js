@@ -1,36 +1,31 @@
 module.exports.config = {
     name: "listadmin",
-    version: '1.0.0',
+    version: '1.0.1',
     hasPermssion: 0,
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    description: "List of group administrators",
-    commandCategory: "Box Chat",
-    usages: "dsqtv",
+    credits: "Nur Muhammad + ChatGPT",
+    description: "গ্রুপের এডমিনদের তালিকা দেখায়",
+    commandCategory: "group",
+    usages: "/listadmin",
     cooldowns: 5,
-    dependencies: []
 };
 
-module.exports.run = async function({ api, event, args, Users }) {
-    /*try {
-        var threadInfo = await api.getThreadInfo(args[0]);
-    } catch (e) {
-        var threadInfo = await api.getThreadInfo(event.threadID);
-    }*/
-    var threadInfo = await api.getThreadInfo(event.threadID);
-    let qtv = threadInfo.adminIDs.length;
-    var listad = '';
-    var qtv2 = threadInfo.adminIDs;
-    var fs = global.nodemodule["fs-extra"];
-    dem = 1;
-    for (let i = 0; i < qtv2.length; i++) {
-        const info = (await api.getUserInfo(qtv2[i].id));
-        const name = info[qtv2[i].id].name;
-        listad += '' + `${dem++}` + '. ' + name + '\n';
-    }
+module.exports.run = async function({ api, event, Users }) {
+    try {
+        const threadInfo = await api.getThreadInfo(event.threadID);
+        const adminList = threadInfo.adminIDs;
+        const adminCount = adminList.length;
+        let msg = `🌺 এই গ্রুপে মোট ${adminCount} জন অ্যাডমিন আছেন:\n\n`;
+        let index = 1;
 
-    api.sendMessage(
-        `The list of ${qtv} administrators includes:\n${listad}`,
-        event.threadID,
-        event.messageID
-    );
+        for (const admin of adminList) {
+            const userInfo = await api.getUserInfo(admin.id);
+            const name = userInfo[admin.id].name;
+            msg += `🔹 ${index++}. ${name}\n`;
+        }
+
+        msg += `\n🌸 অনুরোধে তালিকা করেছেন: নূর মোহাম্মদ`;
+        return api.sendMessage(msg, event.threadID, event.messageID);
+    } catch (err) {
+        return api.sendMessage("❌ অ্যাডমিন তালিকা আনতে সমস্যা হয়েছে।", event.threadID, event.messageID);
+    }
 };
