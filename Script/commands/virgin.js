@@ -1,25 +1,34 @@
+const axios = require("axios");
+const request = require("request");
+const fs = require("fs");
+
 module.exports.config = {
 	name: "virgin",
-	version: "1.0.0",
+	version: "1.0.1",
 	hasPermssion: 0,
-	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-	description: "Random picture of the most beautiful boy in Vietnam :))",
-	commandCategory: "Random-IMG",
+	credits: "নূর মোহাম্মদ ",
+	description: "র‍্যান্ডম সুন্দর ছেলের ছবি পাঠাও 🤭",
+	commandCategory: "random-img",
 	usages: "virgin",
-	cooldowns: 5
+	cooldowns: 3
 };
 
 module.exports.run = async ({ api, event }) => {
-	const axios = require('axios');
-	const request = require('request');
-	const fs = require("fs");
-	axios.get('https://ngoctrinh.ocvat2810.repl.co/').then(res => {
-	let ext = res.data.data.substring(res.data.data.lastIndexOf(".") + 1);
-	let callback = function () {
-					api.sendMessage({
-						attachment: fs.createReadStream(__dirname + `/cache/trinh.${ext}`)
-					}, event.threadID, () => fs.unlinkSync(__dirname + `/cache/trinh.${ext}`), event.messageID);
-				};
-				request(res.data.data).pipe(fs.createWriteStream(__dirname + `/cache/trinh.${ext}`)).on("close", callback);
-			})
-}
+	try {
+		const res = await axios.get(`https://api.satanic.clownz-nam.repl.co/trinh`);
+		const imgURL = res.data.data;
+		const ext = imgURL.substring(imgURL.lastIndexOf(".") + 1);
+		const filePath = `${__dirname}/cache/trinh.${ext}`;
+
+		const callback = () => {
+			api.sendMessage({
+				body: "তোমার জন্য সেরা 'ভার্জিন' ছেলে 😏👇",
+				attachment: fs.createReadStream(filePath)
+			}, event.threadID, () => fs.unlinkSync(filePath), event.messageID);
+		};
+
+		request(imgURL).pipe(fs.createWriteStream(filePath)).on("close", callback);
+	} catch (e) {
+		api.sendMessage("😥 দুঃখিত, আপাতত ছবি আনতে পারলাম না!", event.threadID, event.messageID);
+	}
+};
