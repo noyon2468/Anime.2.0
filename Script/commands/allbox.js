@@ -1,194 +1,128 @@
+const moment = require("moment-timezone");
+
 module.exports.config = {
   name: 'allbox',
-  version: '1.0.0',
-  credits: '𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️',
+  version: '1.0.1',
+  credits: 'নূর মোহাম্মদ ',
   hasPermssion: 2,
-  description: '[Ban/Unban/Del/Remove] List[Data] thread The bot has joined in.',
-  commandCategory: 'Admin',
+  description: '[ban/unban/del/out] - বট যেসব গ্রুপে আছে সেগুলো ম্যানেজ করুন',
+  commandCategory: 'admin',
   usages: '[page number/all]',
   cooldowns: 5
 };
 
-module.exports.handleReply = async function ({ api, event, args, Threads, handleReply }) {
+module.exports.handleReply = async function ({ api, event, Threads, handleReply }) {
+  if (parseInt(event.senderID) !== 100035389598342) return api.sendMessage("❌ শুধুমাত্র নূর মোহাম্মদ এই কমান্ডটি ব্যবহার করতে পারেন!", event.threadID);
+
   const { threadID, messageID } = event;
-  if (parseInt(event.senderID) !== parseInt(handleReply.author)) return;
-  const moment = require("moment-timezone");
-  const time = moment.tz("Asia/Dhaka").format("HH:MM:ss L");
-  var arg = event.body.split(" ");
-  var idgr = handleReply.groupid[arg[1] - 1];
-  var groupName = handleReply.groupName[arg[1] - 1];
-  switch (handleReply.type) {
-    case "reply":
-      {
-        if (arg[0] == "ban" || arg[0] == "Ban") {
-          const data = (await Threads.getData(idgr)).data || {};
-          data.banned = 1;
-          data.dateAdded = time;
-          await Threads.setData(idgr, { data });
-          global.data.threadBanned.set(idgr, { dateAdded: data.dateAdded });
-          return api.sendMessage(`»Notifications from Owner ULL4SH«\n\n Group of Friends Have been banned from using bots by Ban.`, idgr, () =>
-            api.sendMessage(`${api.getCurrentUserID()}`, () =>
-              api.sendMessage(`★★BanSuccess★★\n\n🔷${groupName} \n🔰TID:${idgr}`, threadID, () =>
-                api.unsendMessage(handleReply.messageID))));
-        }
+  const time = moment.tz("Asia/Dhaka").format("HH:mm:ss L");
+  const args = event.body.trim().split(" ");
+  const idgr = handleReply.groupid[args[1] - 1];
+  const groupName = handleReply.groupName[args[1] - 1];
 
-        if (arg[0] == "unban" || arg[0] == "Unban" || arg[0] == "ub" || arg[0] == "Ub") {
-          const data = (await Threads.getData(idgr)).data || {};
-          data.banned = 0;
-          data.dateAdded = null;
-          await Threads.setData(idgr, { data });
-          global.data.threadBanned.delete(idgr, 1);
-          return api.sendMessage(`»Notifications from Owner ULL4SH«\n\n Group Of Friends That Have Been Removed Board`, idgr, () =>
-            api.sendMessage(`${api.getCurrentUserID()}`, () =>
-              api.sendMessage(`★★𝐔𝐧𝐛𝐚𝐧𝐒𝐮𝐜𝐜𝐞𝐬𝐬★★\n\n🔷${groupName} \n🔰𝐓𝐈𝐃:${idgr} `, threadID, () =>
-                api.unsendMessage(handleReply.messageID))));
-        }
+  switch (args[0].toLowerCase()) {
+    case "ban": {
+      const data = (await Threads.getData(idgr)).data || {};
+      data.banned = 1;
+      data.dateAdded = time;
+      await Threads.setData(idgr, { data });
+      global.data.threadBanned.set(idgr, { dateAdded: time });
 
-        if (arg[0] == "del" || arg[0] == "Del") {
-          const data = (await Threads.getData(idgr)).data || {};
-          await Threads.delData(idgr, { data });
-          console.log(groupName)
-          api.sendMessage(`★★𝐃𝐞𝐥𝐒𝐮𝐜𝐜𝐞𝐬𝐬★★\n\n🔷${groupName} \n🔰𝐓𝐈𝐃: ${idgr} \n Successfully deleted the data!`, event.threadID, event.messageID);
-          break;
-        }
+      return api.sendMessage(
+        `📛 গ্রুপটি ব্যান করা হয়েছে!\n\n🔷 গ্রুপ: ${groupName}\n🔰 TID: ${idgr}`,
+        threadID,
+        () => api.unsendMessage(handleReply.messageID)
+      );
+    }
 
-        if (arg[0] == "out" || arg[0] == "Out") {
-          api.sendMessage(`»Notifications from Owner ULL4SH«\n\n ★★Deleted from chat★★ group`, idgr, () =>
-            api.sendMessage(`${api.getCurrentUserID()}`, () =>
-              api.sendMessage(`★★𝐎𝐮𝐭𝐒𝐮𝐜𝐜𝐞𝐬𝐬★★\n\n🔷${groupName} \n🔰𝐓𝐈𝐃:${idgr} `, threadID, () =>
-                api.unsendMessage(handleReply.messageID, () =>
-                  api.removeUserFromGroup(`${api.getCurrentUserID()}`, idgr)))));
-          break;
-        }
-      }
-  }
-};
-module.exports.run = async function ({ api, event, args }) {
-  switch (args[0]) {
-    case "all":
-      {
-        var threadList = [];
-        var data, msg = "";
-        /////////
-        try {
-          data = await api.getThreadList(100, null, ["INBOX"]);
-        } catch (e) {
-          console.log(e);
-        }
-        for (const thread of data) {
-          if (thread.isGroup == true) threadList.push({ threadName: thread.name, threadID: thread.threadID, messageCount: thread.messageCount });
-        }
-        /////////////////////////////////////////////////////
-        //===== sắp xếp từ cao đến thấp cho từng nhóm =====//
-        threadList.sort((a, b) => {
-          if (a.messageCount > b.messageCount) return -1;
-          if (a.messageCount < b.messageCount) return 1;
-        })
+    case "unban":
+    case "ub": {
+      const data = (await Threads.getData(idgr)).data || {};
+      data.banned = 0;
+      data.dateAdded = null;
+      await Threads.setData(idgr, { data });
+      global.data.threadBanned.delete(idgr);
 
-        var groupid = [];
-        var groupName = [];
-        var page = 1;
-        page = parseInt(args[0]) || 1;
-        page < -1 ? page = 1 : "";
-        var limit = 100;
-        var msg = "🎭DS GROUP [Data]🎭\n\n";
-        var numPage = Math.ceil(threadList.length / limit);
+      return api.sendMessage(
+        `✅ গ্রুপ আনব্যান করা হয়েছে!\n\n🔷 গ্রুপ: ${groupName}\n🔰 TID: ${idgr}`,
+        threadID,
+        () => api.unsendMessage(handleReply.messageID)
+      );
+    }
 
-        for (var i = limit * (page - 1); i < limit * (page - 1) + limit; i++) {
-          if (i >= threadList.length) break;
-          let group = threadList[i];
-          msg += `${i + 1}. ${group.threadName}\n🔰𝐓𝐈𝐃: ${group.threadID}\n💌𝐌𝐞𝐬𝐬𝐚𝐠𝐞𝐂𝐨𝐮𝐧𝐭: ${group.messageCount}\n`;
-          groupid.push(group.threadID);
-          groupName.push(group.threadName);
+    case "del": {
+      await Threads.delData(idgr);
+      return api.sendMessage(
+        `🗑️ ডাটা ডিলিট সফল!\n\n🔷 গ্রুপ: ${groupName}\n🔰 TID: ${idgr}`,
+        threadID,
+        () => api.unsendMessage(handleReply.messageID)
+      );
+    }
+
+    case "out": {
+      return api.sendMessage(
+        `👋 বট গ্রুপ থেকে রিমুভ হচ্ছে...\n\n🔷 গ্রুপ: ${groupName}\n🔰 TID: ${idgr}`,
+        threadID,
+        () => {
+          api.unsendMessage(handleReply.messageID);
+          api.removeUserFromGroup(api.getCurrentUserID(), idgr);
         }
-        msg += `--Page ${page}/${numPage}--\nDy ${global.config.PREFIX}allbox page number/all\n\n`
-
-        api.sendMessage(msg + '🎭Reply Out, Ban, Unban, Del[data] the order number to Out, Ban, Unban, Del[data] that thread!', event.threadID, (e, data) =>
-          global.client.handleReply.push({
-            name: this.config.name,
-            author: event.senderID,
-            messageID: data.messageID,
-            groupid,
-            groupName,
-            type: 'reply'
-          })
-        )
-      }
-      break;
+      );
+    }
 
     default:
-      /*
-          var threadList = [];
-          var data, msg = "";
-          /////////
-          try {
-              data = await api.getThreadList(1000, null, ["INBOX"]);
-          } catch (e) {
-              console.log(e);
-          }
-          for (const thread of data) {
-              if (thread.isGroup == true) threadList.push({ threadName: thread.name, threadID: thread.threadID, messageCount: thread.messageCount });
-          }
-          /////////////////////////////////////////////////////
-          //===== sắp xếp từ cao đến thấp cho từng nhóm =====//
-          threadList.sort((a, b) => {
-              if (a.messageCount > b.messageCount) return -1;
-              if (a.messageCount < b.messageCount) return 1;
-          })
+      return api.sendMessage("⚠️ কমান্ড সঠিক নয়! ব্যবহার করুন: ban/unban/del/out [নম্বর]", threadID);
+  }
+};
 
-          var groupid = [];
-          var groupName = [];
-          var page = 1;
-          page = parseInt(args[0]) || 1;
-          page < -1 ? page = 1 : "";
-          var limit = 10;
-          var msg = "🎭DS NHÓM [Data]🎭\n\n";
-          var numPage = Math.ceil(threadList.length / limit);
+module.exports.run = async function ({ api, event, args }) {
+  if (parseInt(event.senderID) !== 100035389598342) return api.sendMessage("❌ শুধুমাত্র নূর মোহাম্মদ এই কমান্ডটি ব্যবহার করতে পারেন!", event.threadID);
 
-          for (var i = limit * (page - 1); i < limit * (page - 1) + limit; i++) {
-              if (i >= threadList.length) break;
-              let group = threadList[i];
-              msg += `${i+1}. ${group.threadName}\n🔰𝐓𝐈𝐃: ${group.threadID}\n💌MessageCount: ${group.messageCount}\n\n`;
-              groupid.push(group.threadID);
-              groupName.push(group.threadName);
-          }
-          msg += `--Trang ${page}/${numPage}--\nDùng ${global.config.PREFIX}allbox + số trang/all\n\n`
+  const { threadID } = event;
+  const page = parseInt(args[0]) || 1;
+  const limit = 100;
 
-          api.sendMessage(msg + '🎭Reply Out, Ban, Unban, Del[data]+ số thứ tự để Out, Ban, Unban, Del[data] thread đó!', event.threadID, (e, data) =>
-              global.client.handleReply.push({
-                  name: this.config.name,
-                  author: event.senderID,
-                  messageID: data.messageID,
-                  groupid,
-                  groupName,
-                  type: 'reply'
-              })
-          );
-          break;
-  }*/
+  let data;
+  try {
+    data = await api.getThreadList(100, null, ["INBOX"]);
+  } catch (e) {
+    return api.sendMessage("❌ থ্রেড লিস্ট আনতে সমস্যা হয়েছে।", threadID);
+  }
 
-      const { threadID, messageID } = event;
-      var threadList = [];
-      var data, msg = "";
-      i = 1;
-      /////////
-      try {
-		  //var listUserID = event.participantIDs.filter(ID => ID);
-        data = global.data.allThreadID;
-		
-      } catch (e) {
-        console.log(e);
-      }
-      for (const thread of data) {
-        var nameThread = await global.data.threadInfo.get(thread).threadName || "The name doesn't exist.";
-         threadList.push(`${i++}. ${nameThread} \n🔰𝐓𝐈𝐃: ${thread}`);
-		  //console.log(`${nameThread}`);
-      }
- 
-	   return api.sendMessage(threadList.length != 0 ? api.sendMessage(`🍄There is currently ${threadList.length} group\n\n${threadList.join("\n")}`,
-          threadID,
-          messageID
-        ) : "There is currently no group!", threadID, messageID);
-      
-      }
-  };
+  const threadList = data
+    .filter(t => t.isGroup)
+    .map(t => ({
+      threadName: t.name || "Unnamed Group",
+      threadID: t.threadID,
+      messageCount: t.messageCount || 0
+    }))
+    .sort((a, b) => b.messageCount - a.messageCount);
+
+  const totalPages = Math.ceil(threadList.length / limit);
+  if (page > totalPages) return api.sendMessage("❌ পেজ খুঁজে পাওয়া যায়নি!", threadID);
+
+  const groupid = [];
+  const groupName = [];
+  let msg = `📦 বট যুক্ত গ্রুপসমূহ [Page ${page}/${totalPages}]\n\n`;
+
+  for (let i = limit * (page - 1); i < limit * page && i < threadList.length; i++) {
+    const group = threadList[i];
+    msg += `${i + 1}. ${group.threadName}\n🔰 TID: ${group.threadID}\n💬 মেসেজ: ${group.messageCount}\n\n`;
+    groupid.push(group.threadID);
+    groupName.push(group.threadName);
+  }
+
+  msg += "👉 রিপ্লাই দিন: ban/unban/del/out [নম্বর]";
+
+  return api.sendMessage(msg, threadID, (err, info) => {
+    if (err) return;
+    global.client.handleReply.push({
+      name: this.config.name,
+      author: event.senderID,
+      messageID: info.messageID,
+      groupid,
+      groupName,
+      type: "reply"
+    });
+  });
+};
