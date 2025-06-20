@@ -1,19 +1,17 @@
 //learn to eat, learn to speak, don't learn the habit of replacing cre 
 module.exports.config = {
-
 	name: "googlebar",
-
-	version: "1.0.0",
+	version: "1.0.1",
 	hasPermssion: 0,
-	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-	description: "Comment on table ( ͡° ͜ʖ ͡°)",
+	credits: "নূর মোহাম্মদ + ChatGPT",
+	description: "গুগল বোর্ডে কমেন্ট লিখে ইমেজ বানায় ( ͡° ͜ʖ ͡°)",
 	commandCategory: "edit-img",
-	usages: "google [text]",
+	usages: "googlebar [text]",
 	cooldowns: 10,
 	dependencies: {
-		"canvas":"",
-		 "axios":"",
-		 "fs-extra":""
+		"canvas": "",
+		"axios": "",
+		"fs-extra": ""
 	}
 };
 
@@ -44,34 +42,53 @@ module.exports.wrapText = (ctx, text, maxWidth) => {
 		}
 		return resolve(lines);
 	});
-} 
+}
 
-module.exports.run = async function({ api, event, args }) {
-	let { senderID, threadID, messageID } = event;
+module.exports.run = async function ({ api, event, args, Users }) {
 	const { loadImage, createCanvas } = require("canvas");
 	const fs = global.nodemodule["fs-extra"];
 	const axios = global.nodemodule["axios"];
-	let pathImg = __dirname + '/cache/google.png';
-	var text = args.join(" ");
-	if (!text) return api.sendMessage("Enter the content of the comment on the board", threadID, messageID);
-	let getPorn = (await axios.get(`https://i.imgur.com/GXPQYtT.png`, { responseType: 'arraybuffer' })).data;
-	fs.writeFileSync(pathImg, Buffer.from(getPorn, 'utf-8'));
+
+	let { senderID, threadID, messageID } = event;
+	let pathImg = __dirname + '/cache/googlebar.png';
+	let text = args.join(" ");
+	if (!text) return api.sendMessage("❌ দয়া করে লিখুন কি কমেন্ট করবেন বোর্ডে!", threadID, messageID);
+
+	const templateURL = "https://i.imgur.com/GXPQYtT.png"; // গুগলবার টেমপ্লেট
+
+	// ডাউনলোড ও লোড
+	let imageRaw = (await axios.get(templateURL, { responseType: 'arraybuffer' })).data;
+	fs.writeFileSync(pathImg, Buffer.from(imageRaw, 'utf-8'));
 	let baseImage = await loadImage(pathImg);
 	let canvas = createCanvas(baseImage.width, baseImage.height);
 	let ctx = canvas.getContext("2d");
 	ctx.drawImage(baseImage, 0, 0, canvas.width, canvas.height);
+
+	// ফন্ট সেটিংস
 	ctx.font = "400 30px Arial";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "start";
+
+	// ফন্ট ছোট করে নেওয়া
 	let fontSize = 50;
 	while (ctx.measureText(text).width > 1200) {
 		fontSize--;
 		ctx.font = `400 ${fontSize}px Arial`;
 	}
+
+	// লাইন wrap
 	const lines = await this.wrapText(ctx, text, 470);
-	ctx.fillText(lines.join('\n'), 580,646);//comment
-	ctx.beginPath();
+	ctx.fillText(lines.join('\n'), 580, 646); // কমেন্ট পজিশন
+
+	// শেষ কাজ
 	const imageBuffer = canvas.toBuffer();
 	fs.writeFileSync(pathImg, imageBuffer);
-return api.sendMessage({ attachment: fs.createReadStream(pathImg) }, threadID, () => fs.unlinkSync(pathImg), messageID);        
-}
+
+	// ইউজার নাম
+	let userName = await Users.getNameUser(senderID);
+
+	return api.sendMessage({
+		body: `📝 ${userName} এই লিখেছে গুগল বোর্ডে:\n“${text}”`,
+		attachment: fs.createReadStream(pathImg)
+	}, threadID, () => fs.unlinkSync(pathImg), messageID);
+};
