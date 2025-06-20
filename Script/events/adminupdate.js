@@ -1,113 +1,115 @@
+const fs = require("fs");
+
 module.exports.config = {
-	name: "adminUpdate",
-	eventType: ["log:thread-admins","log:thread-name", "log:user-nickname","log:thread-icon","log:thread-call","log:thread-color"],
-	version: "1.0.1",
-	credits: "𝗜𝘀𝗹𝗮𝗺𝗶𝗰𝗸 𝗰𝗵𝗮𝘁 𝗯𝗼𝘁",
-	description: "Update team information quickly",
-    envConfig: {
-        sendNoti: true,
-    }
+  name: "adminUpdate",
+  eventType: [
+    "log:thread-admins",
+    "log:thread-name",
+    "log:user-nickname",
+    "log:thread-icon",
+    "log:thread-call",
+    "log:thread-color"
+  ],
+  version: "1.1.0",
+  credits: "নূর মোহাম্মদ",
+  description: "গ্রুপে যেকোনো পরিবর্তনের উপর রিয়েলটাইম নোটিফিকেশন",
+  envConfig: {
+    sendNoti: true,
+    autoUnsend: false,
+    timeToUnsend: 30
+  }
 };
 
-module.exports.run = async function ({ event, api, Threads,Users }) {
-	const fs = require("fs");
-	var iconPath = __dirname + "/emoji.json";
-	if (!fs.existsSync(iconPath)) fs.writeFileSync(iconPath, JSON.stringify({}));
-    const { threadID, logMessageType, logMessageData } = event;
-    const { setData, getData } = Threads;
+module.exports.run = async function ({ event, api, Threads, Users }) {
+  const { threadID, logMessageType, logMessageData, author } = event;
+  const { setData, getData } = Threads;
+  const config = global.configModule[this.config.name];
 
-    const thread = global.data.threadData.get(threadID) || {};
-    if (typeof thread["adminUpdate"] != "undefined" && thread["adminUpdate"] == false) return;
+  let dataThread = (await getData(threadID)).threadInfo || {};
+  const threadSetting = global.data.threadData.get(threadID) || {};
+  if (typeof threadSetting["adminUpdate"] != "undefined" && threadSetting["adminUpdate"] == false) return;
 
-    try {
-        let dataThread = (await getData(threadID)).threadInfo;
-        switch (logMessageType) {
-            case "log:thread-admins": {
-                if (logMessageData.ADMIN_EVENT == "add_admin") {
-                    dataThread.adminIDs.push({ id: logMessageData.TARGET_ID })
-                    if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» NOTICE «« Update user ${logMessageData.TARGET_ID} এই নে বলদ তোরে গ্রুপে এড়মিন দিলাম 😁🫵🏾`, threadID, async (error, info) => {
-                        if (global.configModule[this.config.name].autoUnsend) {
-                            await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                            return api.unsendMessage(info.messageID);
-                        } else return;
-                    });
-                }
-                else if (logMessageData.ADMIN_EVENT == "remove_admin") {
-                    dataThread.adminIDs = dataThread.adminIDs.filter(item => item.id != logMessageData.TARGET_ID);
-                    if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» NOTICE «« Update user ${logMessageData.TARGET_ID} তুই পাগল ছাগল এড়মিন হওয়ার যোগ্য না \n তাই তোকে এড়মিন থেকে লাথি মেরে নামিয়ে দেওয়া হলো|`, threadID, async (error, info) => {
-                        if (global.configModule[this.config.name].autoUnsend) {
-                            await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                            return api.unsendMessage(info.messageID);
-                        } else return;
-                    });
-                }
-                break;
-            }
+  const send = async (msg) => {
+    if (!config.sendNoti) return;
+    api.sendMessage(msg, threadID, async (err, info) => {
+      if (config.autoUnsend) {
+        await new Promise(res => setTimeout(res, config.timeToUnsend * 1000));
+        return api.unsendMessage(info.messageID);
+      }
+    });
+  };
 
-            case "log:thread-icon": {
-            	let preIcon = JSON.parse(fs.readFileSync(iconPath));
-            	dataThread.threadIcon = event.logMessageData.thread_icon || "👍";
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`» [ GROUP UPDATE ] y.replace("emoji", "icon")}\n» Original icon: ${preIcon[threadID] || "unknown"}`, threadID, async (error, info) => {
-                	preIcon[threadID] = dataThread.threadIcon;
-                	fs.writeFileSync(iconPath, JSON.stringify(preIcon));
-                    if (global.configModule[this.config.name].autoUnsend) {
-                        await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                        return api.unsendMessage(info.messageID);
-                    } else return;
-                });
-                break;
-            }
-            case "log:thread-call": {
-        if (logMessageData.event === "group_call_started") {
-          const name = await Users.getNameUser(logMessageData.caller_id);
-          api.sendMessage(`[ GROUP UPDATE ]\n❯ ${name} STARTED A ${(logMessageData.video) ? 'VIDEO ' : ''}CALL.`, threadID);
-        } else if (logMessageData.event === "group_call_ended") {
-          const callDuration = logMessageData.call_duration;
-          const hours = Math.floor(callDuration / 3600);
-          const minutes = Math.floor((callDuration - (hours * 3600)) / 60);
-          const seconds = callDuration - (hours * 3600) - (minutes * 60);
-          const timeFormat = `${hours}:${minutes}:${seconds}`;
-          api.sendMessage(`[ GROUP UPDATE ]\n❯ ${(logMessageData.video) ? 'Video' : ''} call has ended.\n❯ Call duration: ${timeFormat}`, threadID);
-        } else if (logMessageData.joining_user) {
-          const name = await Users.getNameUser(logMessageData.joining_user);
-          api.sendMessage(`❯ [ GROUP UPDATE ]\n❯ ${name} Joined the ${(logMessageData.group_call_type == '1') ? 'Video' : ''} call.`, threadID);
+  try {
+    switch (logMessageType) {
+      case "log:thread-admins": {
+        const targetID = logMessageData.TARGET_ID;
+        const name = await Users.getNameUser(targetID);
+        if (logMessageData.ADMIN_EVENT === "add_admin") {
+          dataThread.adminIDs.push({ id: targetID });
+          await send(`😎 এডমিন আপডেট:\n➤ ${name} এখন এই গ্রুপের এডমিন হয়ে গেছে!`);
+        } else {
+          dataThread.adminIDs = dataThread.adminIDs.filter(item => item.id != targetID);
+          await send(`😤 এডমিন অপসারণ:\n➤ ${name} কে এডমিন থেকে সরিয়ে দেওয়া হয়েছে!`);
         }
         break;
-            }
-            case "log:thread-color": {
-            	dataThread.threadColor = event.logMessageData.thread_color || "🌤";
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`» [ GROUP UPDATE ]\n» ${event.logMessageBody.replace("Theme", "color")}`, threadID, async (error, info) => {
-                    if (global.configModule[this.config.name].autoUnsend) {
-                        await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                        return api.unsendMessage(info.messageID);
-                    } else return;
-                });
-                break;
-            }
-          
-            case "log:user-nickname": {
-                dataThread.nicknames[logMessageData.participant_id] = logMessageData.nickname;
-                if (typeof global.configModule["nickname"] != "undefined" && !global.configModule["nickname"].allowChange.includes(threadID) && !dataThread.adminIDs.some(item => item.id == event.author) || event.author == api.getCurrentUserID()) return;
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» NOTICE «« Update user nicknames ${logMessageData.participant_id} to: ${(logMessageData.nickname.length == 0) ? "original name": logMessageData.nickname}`, threadID, async (error, info) => {
-                    if (global.configModule[this.config.name].autoUnsend) {
-                        await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                        return api.unsendMessage(info.messageID);
-                    } else return;
-                });
-                break;
-            }
+      }
 
-            case "log:thread-name": {
-                dataThread.threadName = event.logMessageData.name || "No name";
-                if (global.configModule[this.config.name].sendNoti) api.sendMessage(`»» NOTICE «« Update the group name to ${dataThread.threadName}`, threadID, async (error, info) => {
-                    if (global.configModule[this.config.name].autoUnsend) {
-                        await new Promise(resolve => setTimeout(resolve, global.configModule[this.config.name].timeToUnsend * 1000));
-                        return api.unsendMessage(info.messageID);
-                    } else return;
-                });
-                break;
-            }
+      case "log:thread-icon": {
+        const emojiPath = __dirname + "/emoji.json";
+        const iconData = fs.existsSync(emojiPath) ? JSON.parse(fs.readFileSync(emojiPath)) : {};
+        const newIcon = logMessageData.thread_icon;
+        const prevIcon = iconData[threadID] || "❔";
+        iconData[threadID] = newIcon;
+        fs.writeFileSync(emojiPath, JSON.stringify(iconData, null, 2));
+        await send(`🌟 গ্রুপ আইকন পরিবর্তন:\n➤ পূর্ববর্তী: ${prevIcon}\n➤ নতুন: ${newIcon}`);
+        dataThread.threadIcon = newIcon;
+        break;
+      }
+
+      case "log:thread-call": {
+        if (logMessageData.event === "group_call_started") {
+          const caller = await Users.getNameUser(logMessageData.caller_id);
+          await send(`📞 কল শুরু হয়েছে:\n➤ ${caller} একটি ${logMessageData.video ? 'ভিডিও ' : ''}কল শুরু করেছেন!`);
+        } else if (logMessageData.event === "group_call_ended") {
+          const duration = logMessageData.call_duration || 0;
+          const h = Math.floor(duration / 3600);
+          const m = Math.floor((duration % 3600) / 60);
+          const s = duration % 60;
+          await send(`📴 কল শেষ হয়েছে:\n➤ সময়কাল: ${h}h ${m}m ${s}s`);
+        } else if (logMessageData.joining_user) {
+          const joiner = await Users.getNameUser(logMessageData.joining_user);
+          await send(`🧏‍♂️ কল জয়েন করেছে:\n➤ ${joiner}`);
         }
-        await setData(threadID, { threadInfo: dataThread });
-    } catch (e) { console.log(e) };
-}
+        break;
+      }
+
+      case "log:thread-color": {
+        const newColor = logMessageData.thread_color || "unknown";
+        dataThread.threadColor = newColor;
+        await send(`🎨 থিম কালার পরিবর্তন:\n➤ ${event.logMessageBody.replace("Theme", "Color")}`);
+        break;
+      }
+
+      case "log:user-nickname": {
+        const uid = logMessageData.participant_id;
+        const nickname = logMessageData.nickname;
+        const name = await Users.getNameUser(uid);
+        if (!dataThread.nicknames) dataThread.nicknames = {};
+        dataThread.nicknames[uid] = nickname;
+        await send(`📛 নিকনেম আপডেট:\n➤ ${name} এখন পরিচিত ${nickname.length === 0 ? "মূল নাম" : `"${nickname}"`} নামে!`);
+        break;
+      }
+
+      case "log:thread-name": {
+        const newName = logMessageData.name || "Unnamed";
+        dataThread.threadName = newName;
+        await send(`📢 গ্রুপ নাম পরিবর্তন:\n➤ নতুন নাম: ${newName}`);
+        break;
+      }
+    }
+
+    await setData(threadID, { threadInfo: dataThread });
+  } catch (err) {
+    console.error("[adminUpdate ERROR]:", err);
+  }
+};
