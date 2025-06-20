@@ -1,41 +1,37 @@
-const axios = require('axios');
+const axios = require("axios");
 
 module.exports.config = {
- name: "gpt",
- version: "1.0",
- hasPermission: 0,
- credits: "Islamick Chat",
- usePrefix: false,
- description: "M H BD AI",
- commandCategory: "General",
- cooldowns: 2,
+  name: "gpt",
+  version: "2.1",
+  hasPermission: 0,
+  credits: "Nur Muhammad + ChatGPT",
+  usePrefix: false,
+  description: "Gemini AI দিয়ে বাংলা/English প্রশ্নের উত্তর নিন",
+  commandCategory: "ai-chat",
+  cooldowns: 3,
 };
 
-const API_SERVER_URL = 'https://sensui-useless-apis.codersensui.repl.co/api/tools/ai';
-
 module.exports.run = async ({ api, event, args }) => {
- try {
- const question = args.join(' ');
+  const prompt = args.join(" ");
+  if (!prompt) return api.sendMessage("✍️ প্রশ্ন দিন!\n\n📌 উদাহরণ:\ngpt রাসুল (সঃ) এর জীবনী", event.threadID, event.messageID);
 
- if (!question) {
- return api.sendMessage("আপনার প্রশ্ন টি gpt লিখে অ্যাড করুন: 📝", event.threadID);
- }
+  const waiting = await api.sendMessage("🤖 𝙂𝙚𝙢𝙞𝙣𝙞 চিন্তা করছে...\n⏳ অনুগ্রহ করে অপেক্ষা করুন...", event.threadID, event.messageID);
 
- const response = await axios.get(`${API_SERVER_URL}?question=${encodeURIComponent(question)}`);
+  try {
+    const res = await axios.get(`https://sensui-useless-apis.codersensui.repl.co/api/tools/ai?question=${encodeURIComponent(prompt)}`);
+    
+    if (!res.data || !res.data.answer) {
+      return api.sendMessage("❌ উত্তর পাওয়া যায়নি! একটু পরে আবার চেষ্টা করুন।", event.threadID, event.messageID);
+    }
 
- if (response.data.error) {
- return api.sendMessage("Oops! The AI encountered an error. Please try again later.", event.threadID);
- }
+    const answer = res.data.answer;
+    const finalReply = `╭──「 🤖 𝗚𝗘𝗠𝗜𝗡𝗜 𝗔𝗜 」\n│\n├ 🧠 প্রশ্ন: ${prompt}\n│\n╰ ✅ উত্তর:\n${answer}`;
 
- const answer = response.data.answer;
-
- if (answer) {
- api.sendMessage(`${global.config.BOTNAME}\n𝐓𝐡𝐢𝐬 𝐢𝐬 𝐦𝐲 𝐀𝐧𝐬𝐰𝐞𝐫🙆‍♂️😌\n\n${answer}`, event.threadID);
- } else {
- api.sendMessage("There's something wrong. Please try again...", event.threadID);
- }
- } catch (error) {
- console.error('Error fetching response:', error);
- api.sendMessage("Error fetching response.", event.threadID);
- }
+    api.sendMessage(finalReply, event.threadID, () => {
+      api.unsendMessage(waiting.messageID);
+    }, event.messageID);
+  } catch (e) {
+    console.error(e);
+    return api.sendMessage("⚠️ Gemini সার্ভারে সমস্যা হচ্ছে। পরে আবার চেষ্টা করুন।", event.threadID, event.messageID);
+  }
 };
