@@ -1,52 +1,61 @@
+const fs = require("fs-extra");
+const path = require("path");
+
 module.exports.config = {
-    name: "autosetname",
-    version: "1.0.1",
-    hasPermssion: 1,
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    description: "Automatic setname for new members",
-    commandCategory: "Box Chat",
-    usages: "[add <name> /remove] ",
-    cooldowns: 5
-}
+  name: "autosetname",
+  version: "1.0.1",
+  hasPermssion: 0,
+  credits: "নূর মোহাম্মদ",
+  description: "Automatically set nicknames for new members",
+  commandCategory: "Box Chat",
+  usages: "[add <name> / remove]",
+  cooldowns: 5
+};
+
+const dataPath = path.join(__dirname, "cache", "autosetname.json");
 
 module.exports.onLoad = () => {
-    const { existsSync, writeFileSync } = global.nodemodule["fs-extra"];
-    const { join } = global.nodemodule["path"];
-    const pathData = join(__dirname, "cache", "autosetname.json");
-    if (!existsSync(pathData)) return writeFileSync(pathData, "[]", "utf-8"); 
-}
+  if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, "[]", "utf-8");
+};
 
-module.exports.run = async function  ({ event, api, args, permssionm, Users })  {
-    const { threadID, messageID } = event;
-    const { readFileSync, writeFileSync } = global.nodemodule["fs-extra"];
-    const { join } = global.nodemodule["path"];
+module.exports.run = async function({ event, api, args, Users }) {
+  const { threadID, messageID, senderID } = event;
+  if (!args[0]) {
+    return api.sendMessage(
+      "📌 ব্যবহারের নিয়ম:\n➤ autosetname add <নাম>\n➤ autosetname remove",
+      threadID,
+      messageID
+    );
+  }
 
-    const pathData = join(__dirname, "cache", "autosetname.json");
-    const content = (args.slice(1, args.length)).join(" ");
-    var dataJson = JSON.parse(readFileSync(pathData, "utf-8"));
-    var thisThread = dataJson.find(item => item.threadID == threadID) || { threadID, nameUser: [] };
-    switch (args[0]) {
-        case "add": {
-            if (content.length == 0) return api.sendMessage("The configuration of the new member's name must not be vacated!", threadID, messageID);
-            if (thisThread.nameUser.length > 0) return api.sendMessage("Please remove the old name configuration before naming a new name!!!", threadID, messageID); 
-            thisThread.nameUser.push(content);
-            const name = (await Users.getData(event.senderID)).name
-            writeFileSync(pathData, JSON.stringify(dataJson, null, 4), "utf-8");
-            api.sendMessage(`Configure a successful new member name\nPreview: ${content} ${name}`, threadID, messageID);
-            break;
-        }
-        case "rm":
-        case "remove":
-        case "delete": {
-                if (thisThread.nameUser.length == 0) return api.sendMessage("Your group hasn't configured a new member's name!!", threadID, messageID);
-                thisThread.nameUser = [];
-                api.sendMessage(`Successfully deleted the configuration of a new member's name`, threadID, messageID);
-                break;
-        }
-        default: {
-                api.sendMessage(`Use: autosetname add to configure a nickname for a new member\n: autosetname remove to remove the nickname configuration for the new member`, threadID, messageID);
-        }
-    }
-    if (!dataJson.some(item => item.threadID == threadID)) dataJson.push(thisThread);
-    return writeFileSync(pathData, JSON.stringify(dataJson, null, 4), "utf-8");
-}
+  let data = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+  let threadData = data.find(item => item.threadID == threadID);
+
+  if (!threadData) {
+    threadData = { threadID, nameUser: [] };
+    data.push(threadData);
+  }
+
+  const name = (await Users.getData(senderID)).name;
+  const content = args.slice(1).join(" ");
+
+  switch (args[0]) {
+    case "add":
+      if (!content) return api.sendMessage("❌ নতুন সদস্যের নাম ফাঁকা রাখা যাবে না!", threadID, messageID);
+      if (threadData.nameUser.length > 0) return api.sendMessage("⚠️ আগে থেকে একটি নাম সেট করা আছে। নতুন নাম সেট করতে হলে আগেরটি মুছুন!", threadID, messageID);
+      threadData.nameUser.push(content);
+      fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), "utf-8");
+      return api.sendMessage(`✅ নতুন সদস্যের নাম কনফিগার করা হয়েছে!\nউদাহরণ: ${content} ${name}`, threadID, messageID);
+
+    case "rm":
+    case "remove":
+    case "delete":
+      if (threadData.nameUser.length === 0) return api.sendMessage("ℹ️ কোনো নাম কনফিগার করা হয়নি!", threadID, messageID);
+      threadData.nameUser = [];
+      fs.writeFileSync(dataPath, JSON.stringify(data, null, 2), "utf-8");
+      return api.sendMessage("✅ নতুন সদস্যের নাম কনফিগারেশন মুছে ফেলা হয়েছে।", threadID, messageID);
+
+    default:
+      return api.sendMessage("❌ সঠিক ফরম্যাট দিন।\nব্যবহার করুন: autosetname add/remove", threadID, messageID);
+  }
+};
