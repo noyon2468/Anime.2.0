@@ -1,77 +1,66 @@
+const axios = require("axios");
+const request = require("request");
+const fs = require("fs-extra");
+
 module.exports.config = {
- name: "🌍",
- version: "1.0.0",
- hasPermssion: 0,
- credits: "Islamick Chat",
- description: "sand best islamick Video",
- commandCategory: "noprefix",
- usages: "🌍",
- cooldowns: 5,
- dependencies: {
- "request":"",
- "fs-extra":"",
- "axios":""
- }
- 
+  name: "🌍",
+  version: "1.0.0",
+  hasPermssion: 0,
+  credits: "Islamick Chat - Modified by নূর মোহাম্মদ",
+  description: "Send beautiful Islamic video when 🌍 or world is typed",
+  commandCategory: "noprefix",
+  usages: "🌍",
+  cooldowns: 5
 };
-module.exports.handleEvent = async ({ api, event, Threads }) => {
- if (event.body.indexOf("🌍")==0 || (event.body.indexOf("🌎")==0) || event.body.indexOf("🌎")==0 ||
-event.body.indexOf("world")==0 ||
-event.body.indexOf("🌏")==0 ||
-event.body.indexOf("🌐")==0 ||
-event.body.indexOf("🌍")==0 ||
-event.body.indexOf("🌎")==0 ||
-event.body.indexOf("🌏")==0 ||
-event.body.indexOf("🌐")==0) {
- const axios = global.nodemodule["axios"];
-const request = global.nodemodule["request"];
-const fs = global.nodemodule["fs-extra"];
- var link = [
-"https://i.imgur.com/O9JDYv0.mp4",
- ];
- var callback = () => api.sendMessage({body:`•—»✨[ 𝐏𝐫𝐞𝐟𝐢𝐱 𝐄𝐯𝐞𝐧𝐭 ]✨«—•\n•┄┅════❁🌺❁════┅┄•\n\n আল্লাহ যে কতোটা মহান তুমি মহাকাষ দেখেলেই বুজতে পেরে যাবে ইনশাআল্লাহ 🌺✨🌏 \n\n•┄┅════❁🌺❁════┅┄•\n•—»✨[ 𝐈𝐬𝐥𝐚𝐦𝐢𝐜𝐤 𝐂𝐡𝐚𝐭 ]✨«—•\n[🐰] → 𝗣𝗿𝗲𝗳𝗶𝘅 : [ ${PREFIX} ]\n[🫰] 𝐍𝐎𝐏𝐑𝐄𝐅𝐈𝐗 : 🌍\n[⌛] → 𝐃𝐚𝐭𝐞 : ${Date.now() - timeStart} 𝐓𝐢𝐦𝐞\n[🍒] → ${global.config.BOTNAME}`,attachment: fs.createReadStream(__dirname + "/cache/2024.mp4")}, event.threadID, () => fs.unlinkSync(__dirname + "/cache/2024.mp4"), event.messageID);
- const timeStart = Date.now();
- const dcm = process.uptime(); 
- var anh = Math.floor(dcm / (60 * 60));
-	var la = Math.floor((dcm % (60 * 60)) / 60);
-	var vt = Math.floor(dcm % 60);
-const res = await
-axios.get(`http://toan-culi.tutoan205.repl.co/text/cadao`);
-var thinh = res.data.url;
-let ext = res.data.data.substring(res.data.url.lastIndexOf(".") + 1);
- const PREFIX = config.PREFIX;
- return request(encodeURI(link[Math.floor(Math.random() * link.length)])).pipe(fs.createWriteStream(__dirname+"/cache/2024.mp4")).on("close",() => callback());
-}
- 
- module.exports.languages = {
- "vi": {
- "on": "Dùng sai cách rồi lêu lêu",
- "off": "sv ngu, đã bão dùng sai cách",
-		"successText": `🧠`,
-	},
-	"en": {
-		"on": "on",
-		"off": "off",
-		"successText": "success!",
-	}
- }
- module.exports.run = async ({ event, api, Threads, getText }) => {
- let { threadID, messageID } = event;
- let data = (await Threads.getData(threadID)).data;
-	if (typeof data["🌍"] == "undefined" || data["🌍"] == true) data["🌍"] = false;
-	else data["🌍"] = true;
-	await Threads.setData(threadID, {
-		data
-	});
-	global.data.threadData.set(threadID, data);
-api.sendMessage(`${(data["🌍"] == false) ? getText("off") : getText("on")} ${getText("successText")}`, threadID, messageID);
-} 
 
+module.exports.handleEvent = async ({ api, event }) => {
+  const content = event.body ? event.body.toLowerCase() : "";
+  if (
+    content.startsWith("🌍") ||
+    content.startsWith("🌎") ||
+    content.startsWith("🌏") ||
+    content.startsWith("🌐") ||
+    content.includes("world")
+  ) {
+    const timeStart = Date.now();
 
+    const link = [
+      "https://i.imgur.com/O9JDYv0.mp4"
+      // চাইলে আরও লিংক যোগ করতে পারো
+    ];
 
+    const filePath = __dirname + "/cache/world_islamic.mp4";
+    const selectedLink = link[Math.floor(Math.random() * link.length)];
 
- 
- }
-module.exports.run = async({api,event,args,Users,Threads,Currencies}) => {
+    const callback = () => {
+      const timeTaken = Date.now() - timeStart;
+      const uptime = process.uptime();
+      const hours = Math.floor(uptime / 3600);
+      const minutes = Math.floor((uptime % 3600) / 60);
+      const seconds = Math.floor(uptime % 60);
 
- };
+      const prefix = global.config.PREFIX || "!";
+
+      api.sendMessage({
+        body: `🌍 আল্লাহর সৃষ্টির জগৎ সত্যিই বিস্ময়কর! 🌟\n\n📽️ ইসলামিক ভিডিও উপভোগ করুন 💖\n\n🕒 বট চালু: ${hours}h ${minutes}m ${seconds}s\n⏳ কমান্ড প্রসেস সময়: ${timeTaken}ms\n🛠️ Prefix: ${prefix}\n\n~ নূর মোহাম্মদ`,
+        attachment: fs.createReadStream(filePath)
+      }, event.threadID, () => fs.unlinkSync(filePath), event.messageID);
+    };
+
+    request(encodeURI(selectedLink))
+      .pipe(fs.createWriteStream(filePath))
+      .on("close", callback);
+  }
+};
+
+module.exports.run = async ({ event, api, Threads }) => {
+  const { threadID, messageID } = event;
+  const data = (await Threads.getData(threadID)).data;
+
+  data["🌍"] = typeof data["🌍"] === "undefined" ? false : !data["🌍"];
+
+  await Threads.setData(threadID, { data });
+  global.data.threadData.set(threadID, data);
+
+  api.sendMessage(`🌐 Islamic 🌍 command is now ${(data["🌍"] ? "ON ✅" : "OFF ❌")}`, threadID, messageID);
+};
