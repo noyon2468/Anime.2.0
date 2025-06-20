@@ -4,7 +4,7 @@ const path = require("path");
 module.exports.config = {
   name: "approve",
   version: "1.0.2",
-  hasPermssion: 2,
+  hasPermssion: 0,
   credits: "নূর মোহাম্মদ + ChatGPT",
   description: "অনুমোদিত থ্রেড পরিচালনা করুন",
   commandCategory: "admin",
