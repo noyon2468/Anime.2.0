@@ -6,7 +6,8 @@ module.exports.config = {
   description: "কেউ গ্রুপ ছাড়লে কাস্টম বিদায়ী মেসেজ দেয়",
   dependencies: {
     "fs-extra": "",
-    "path": ""
+    "path": "",
+    "moment-timezone": ""
   }
 };
 
@@ -26,19 +27,18 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
   const { threadID, logMessageData, author } = event;
   const leftUID = logMessageData.leftParticipantFbId;
 
-  // Self leave হলে ignore করো
   if (leftUID == api.getCurrentUserID()) return;
 
   const time = moment.tz("Asia/Dhaka").format("DD/MM/YYYY || HH:mm:ss");
   const hours = parseInt(moment.tz("Asia/Dhaka").format("HH"));
   const session = hours < 11 ? "সকালের" : hours <= 16 ? "দুপুরের" : hours <= 19 ? "বিকালের" : "রাতের";
-  const type = (author == leftUID) ? "নিজে চলে গেছে" : "ব্যবস্থাপনায় বাদ পড়েছে";
+  const type = (author == leftUID) ? "নিজে চলে গেছেন" : "অ্যাডমিনের মাধ্যমে বাদ পড়েছেন";
 
   const userName = global.data.userName.get(leftUID) || await Users.getNameUser(leftUID);
   const threadData = global.data.threadData.get(threadID) || (await Threads.getData(threadID)).data;
 
   let msg = typeof threadData.customLeave == "undefined"
-    ? `😢 ━━「 বিদায়ী ঘোষণা 」━━ 😢\n\n🌤️ {session} একজন গ্রুপ থেকে চলে গেছেন...\n👤 নাম: {name}\n📌 অবস্থা: {type}\n🕓 সময়: {time}\n\n💬 আমরা সবাই বলছি:\n"তোমায় মিস করবো রে ভাই/বোন!" 😭`
+    ? `😢 ━━「 বিদায়ের ঘোষণা 」━━ 😢\n\n🌤️ {session} একজন গ্রুপ থেকে চলে গেছেন...\n👤 নাম: {name}\n📌 অবস্থা: {type}\n🕓 সময়: {time}\n\n💬 আমরা সবাই বলছি:\n"তোমায় মিস করবো রে ভাই/বোন!" 😭`
     : threadData.customLeave;
 
   msg = msg
@@ -47,7 +47,6 @@ module.exports.run = async function ({ api, event, Users, Threads }) {
     .replace(/\{session}/g, session)
     .replace(/\{time}/g, time);
 
-  // র‍্যান্ডম GIF খোঁজা
   const gifFolder = join(__dirname, "cache", "leaveGif", "randomgif");
   const gifFiles = existsSync(gifFolder) ? readdirSync(gifFolder) : [];
   const randomGif = gifFiles.length ? join(gifFolder, gifFiles[Math.floor(Math.random() * gifFiles.length)]) : null;
