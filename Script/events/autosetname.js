@@ -1,28 +1,49 @@
 module.exports.config = {
-	name: "autosetname",
-	eventType: ["log:subscribe"],
-	version: "1.0.3",
-	credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-	description: "Automatically set new member nicknames"
+  name: "autosetname",
+  eventType: ["log:subscribe"],
+  version: "1.1.0",
+  credits: "নূর মোহাম্মদ",
+  description: "Automatically set nicknames for new members using saved prefix"
 };
 
-module.exports.run = async function({ api, event, Users }) {
-const { threadID } = event;
-var memJoin = event.logMessageData.addedParticipants.map(info => info.userFbId)
-	for (let idUser of memJoin) {
-		const { readFileSync, writeFileSync } = global.nodemodule["fs-extra"];
-		const { join } = global.nodemodule["path"]
-		const pathData = join("./modules/commands","cache", "autosetname.json");
-		var dataJson = JSON.parse(readFileSync(pathData, "utf-8"));
-		var thisThread = dataJson.find(item => item.threadID == threadID) || { threadID, nameUser: [] };
-		if (thisThread.nameUser.length == 0) return 
-		if (thisThread.nameUser.length != 0) {  
-		var setName = thisThread.nameUser[0] 
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		var namee1 = await api.getUserInfo(idUser)
-        var namee = namee1[idUser].name
-		api.changeNickname(`${setName} ${namee}`, threadID, idUser);
-		} 
-	}	
-	return api.sendMessage(`Set a temporary nickname for the new member`, threadID, event.messageID)
-}
+module.exports.run = async function ({ api, event, Users }) {
+  const { threadID, logMessageData } = event;
+  const fs = require("fs-extra");
+  const path = require("path");
+
+  const dataPath = path.join(__dirname, "cache", "autosetname.json");
+  let dataJson = [];
+
+  // ফাইল না থাকলে তৈরি করো
+  if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, JSON.stringify([]));
+  else dataJson = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+
+  const thisThread = dataJson.find(item => item.threadID == threadID);
+  if (!thisThread || !thisThread.nameUser || thisThread.nameUser.length === 0) return;
+
+  const prefixList = thisThread.nameUser;
+  const newMembers = logMessageData.addedParticipants;
+
+  let done = [];
+
+  for (let i = 0; i < newMembers.length; i++) {
+    const userID = newMembers[i].userFbId;
+    const prefix = prefixList[i % prefixList.length]; // রাউন্ড রোটেট করে prefix
+
+    const info = await Users.getData(userID);
+    const fullName = info.name || "Friend";
+
+    const nickname = `${prefix} ${fullName}`;
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      await api.changeNickname(nickname, threadID, userID);
+      done.push(nickname);
+    } catch (err) {
+      console.log(`Nickname set failed for ${userID}`);
+    }
+  }
+
+  if (done.length > 0) {
+    return api.sendMessage(`✅ ${done.length} জন নতুন মেম্বারের nickname সেট করা হয়েছে:\n- ${done.join("\n- ")}`, threadID);
+  }
+};
