@@ -1,27 +1,39 @@
 module.exports.config = {
- name: "autosend",
- eventType: [],
- version: "0.0.1",
- credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
- description: "Listen events"
+  name: "autosend",
+  version: "1.0.0",
+  credits: "নূর মোহাম্মদ",
+  description: "নির্দিষ্ট সময় সকল গ্রুপে অটো মেসেজ পাঠায়"
 };
 
-module.exports.run = async({ event, api, Threads, Users }) => {
-const moment = require("moment-timezone");
-time = moment.tz('Asia/Dhaka').format('HH:mm:ss');
-var cantsend = [];
-    var allThread = global.data.allThreadID || [];
-    if (time == "17:22:00") {
-    for (const idThread of allThread) {
-        if (isNaN(parseInt(idThread)) || idThread == event.threadID) ""
-        else {
-            api.sendMessage("test" + args.join(" ") , idThread, (error, info) => {
-                if (error) cantsend.push(idThread);
-            });
+module.exports.onLoad = async function ({ api }) {
+  const moment = require("moment-timezone");
+  const sendTime = "17:22:00"; // HH:mm:ss format
+  const messageToSend = "⏰ অটো মেসেজ! সবাই সচেতন থাকো! ✅";
+
+  setInterval(async () => {
+    const now = moment.tz("Asia/Dhaka").format("HH:mm:ss");
+    if (now === sendTime) {
+      const allThread = global.data.allThreadID || [];
+      const failedThreads = [];
+
+      for (const threadID of allThread) {
+        if (isNaN(parseInt(threadID))) continue;
+        try {
+          await api.sendMessage(messageToSend, threadID);
+        } catch (err) {
+          failedThreads.push(threadID);
         }
       }
-    for (var id of global.config.ADMINBOT) {
-          api.sendMessage(`Error when automatically sending messages to threads:\n${cantsend.join("\n")}`,id);
+
+      // Notify Admins if any fail
+      if (failedThreads.length > 0) {
+        for (const adminID of global.config.ADMINBOT) {
+          api.sendMessage(
+            `❌ কিছু থ্রেডে মেসেজ পাঠানো যায়নি:\n${failedThreads.join("\n")}`,
+            adminID
+          );
+        }
+      }
     }
-  }
-                                                                                          }
+  }, 1000); // Check every second
+};
