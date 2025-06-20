@@ -1,25 +1,49 @@
+const axios = require("axios");
+const fs = require("fs-extra");
+
 module.exports.config = {
   name: "create",
-  version: "1.0.",
+  version: "1.1.0",
   hasPermssion: 0,
-  credits: "Islamick Chat",
-  description: "( 𝙂𝙚𝙣𝙚𝙧𝙖𝙩 𝘼𝙄 𝙞𝙢𝙖𝙜𝙚𝙨 )",
-  commandCategory: "create-images",
-  usages: "( 𝖨𝗆𝖺𝗀𝗂𝗇𝖾 𝖨𝗆𝖺𝗀𝖾 )",
-  cooldowns: 2,
+  credits: "Nur Muhammad + ChatGPT",
+  description: "🔮 AI দিয়ে ছবি তৈরি করুন শুধু কল্পনা দিয়ে!",
+  commandCategory: "ai-photo",
+  usages: "create <আপনার কল্পনার বর্ণনা>",
+  cooldowns: 3,
 };
-module.exports.run = async ({api, event, args }) => {
-const axios = require('axios');
-const fs = require('fs-extra');
- let { threadID, messageID } = event;
-  let query = args.join("𝐒𝐮𝐜𝐜𝐞𝐬𝐟𝐮𝐥 𝐅𝐨𝐫 𝐘𝐨𝐮𝐫 𝐂𝐫𝐞𝐚𝐭𝐞 𝐈𝐦𝐠✨🌺");
-  if (!query) return api.sendMessage("𝖯𝗅𝖾𝖺𝗌𝖾 𝗎𝗌𝖾 ✓𝗀𝖾𝗇𝗆𝖺𝗀𝖾 <𝗍𝖾𝗑𝗍>", threadID, messageID);
-let path = __dirname + `/cache/poli.png`;
-  const poli = (await axios.get(`https://image.pollinations.ai/prompt/${query}`, {
-    responseType: "arraybuffer",
-  })).data;
-  fs.writeFileSync(path, Buffer.from(poli, "utf-8"));
-  api.sendMessage({
-    body: "𝐒𝐮𝐜𝐜𝐞𝐬𝐟𝐮𝐥 𝐅𝐨𝐫 𝐘𝐨𝐮𝐫 𝐂𝐫𝐞𝐚𝐭𝐞 𝐈𝐦𝐠✨🌺",
-    attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID);
+
+module.exports.run = async ({ api, event, args }) => {
+  const query = args.join(" ");
+  const { threadID, messageID } = event;
+
+  if (!query) {
+    return api.sendMessage(
+      "✍️ একটি টেক্সট দিন ছবি তৈরির জন্য!\n\n📌 উদাহরণ:\ncreate sunset on mars\ncreate মসজিদে বসে কোরআন পড়ছে",
+      threadID,
+      messageID
+    );
+  }
+
+  const waitMsg = await api.sendMessage("🖼️ আপনার ছবি তৈরি হচ্ছে...\n⏳ দয়া করে একটু অপেক্ষা করুন!", threadID);
+
+  try {
+    const imgData = (await axios.get(`https://image.pollinations.ai/prompt/${encodeURIComponent(query)}`, {
+      responseType: "arraybuffer",
+    })).data;
+
+    const filePath = `${__dirname}/cache/ai_create.png`;
+    fs.writeFileSync(filePath, Buffer.from(imgData, "utf-8"));
+
+    api.sendMessage({
+      body: `✅ আপনার AI ইমেজ তৈরি হয়েছে!\n🔎 Prompt: ${query}`,
+      attachment: fs.createReadStream(filePath),
+    }, threadID, () => {
+      fs.unlinkSync(filePath);
+      api.unsendMessage(waitMsg.messageID);
+    }, messageID);
+    
+  } catch (error) {
+    console.error(error);
+    api.sendMessage("❌ ছবি তৈরি করতে সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন!", threadID, messageID);
+  }
 };
