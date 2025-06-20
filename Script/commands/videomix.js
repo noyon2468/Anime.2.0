@@ -1,51 +1,62 @@
+const axios = require('axios');
+const fs = require("fs");
+const request = require("request");
+
+const videoCategories = [
+  "status", "sad", "baby", "love", "ff", "shairi", "humaiyun",
+  "islam", "anime", "short", "event", "prefix", "cpl", "time",
+  "lofi", "happy", "football", "funny"
+];
+
 module.exports.config = {
- name: "videomix",
- version: "11.9.7",
- hasPermssion: 0,
- credits: "Shaon Ahmed",
- description: "random love story video",
- commandCategory: "video",
- usages: "random",
- cooldowns: 30,
+  name: "videomix",
+  version: "12.5.0",
+  hasPermssion: 0,
+  credits: "নূর মোহাম্মদ + Shaon Ahmed",
+  description: "র‍্যান্ডম ভিডিও / নির্দিষ্ট ক্যাটাগরির ভিডিও / /next",
+  commandCategory: "video",
+  usages: "[category] | /next",
+  cooldowns: 10
 };
 
-module.exports.run = async function({ api, event }) {
- const axios = require('axios');
- const request = require('request');
- const fs = require("fs");
- const apis = await axios.get('https://raw.githubusercontent.com/shaonproject/Shaon/main/api.json')
- const video = apis.data.api
- var shaon = [`${video}/video/status`,
-`${video}/video/sad`,
-`${video}/video/baby`,
-`${video}/video/love`,
-`${video}/video/ff`,
-`${video}/video/shairi`,
-`${video}/video/humaiyun`,
-`${video}/video/islam`,
-`${video}/video/anime`,
-`${video}/video/short`,
-`${video}/video/event`,
-`${video}/video/prefix`,
-`${video}/video/cpl`,
-`${video}/video/time`,
-`${video}/video/lofi`,
-`${video}/video/happy`,
-`${video}/video/football`, 
-`${video}/video/funny` 
-]
- var shaon1 = shaon[Math.floor(Math.random() * shaon.length)]
- axios.get(shaon1).then(res => {
- let ext = res.data.data.substring(res.data.data.lastIndexOf(".") + 1);
- let count = res.data.count;
- let shaon2 = res.data.shaon;
- let callback = function () {
- api.sendMessage({
- body: `𝐒𝐏𝐀𝐘𝐒𝐇𝐄𝐀𝐋 𝗩𝗶𝗱𝗲𝗼 𝐌𝐈𝐗 
-${shaon2} 𝚃𝙾𝚃𝙰𝙻 𝚅𝙸𝙳𝙴𝙾:${count}...🎬\n\n｢𝐔𝐋𝐋𝐀𝐒𝐇｣`,
- attachment: fs.createReadStream(__dirname + `/cache/Shaoon.mp4`)
- }, event.threadID, () => fs.unlinkSync(__dirname + `/cache/Shaoon.mp4`), event.messageID);
- };
- request(res.data.data).pipe(fs.createWriteStream(__dirname + `/cache/Shaoon.mp4`)).on("close", callback);
- })
-}
+let lastCategory = {};
+
+module.exports.run = async function({ api, event, args }) {
+  try {
+    const { threadID, messageID, senderID } = event;
+    const apis = await axios.get('https://raw.githubusercontent.com/shaonproject/Shaon/main/api.json');
+    const baseUrl = apis.data.api;
+
+    let category = args[0]?.toLowerCase();
+
+    if (category === "/next") {
+      category = lastCategory[senderID];
+      if (!category) return api.sendMessage("❌ আগের কোনো ক্যাটাগরি খুঁজে পাওয়া গেল না। আগে একটি ভিডিও চালাও।", threadID, messageID);
+    }
+
+    if (!category || !videoCategories.includes(category)) {
+      category = videoCategories[Math.floor(Math.random() * videoCategories.length)];
+    }
+
+    lastCategory[senderID] = category;
+
+    const res = await axios.get(`${baseUrl}/video/${category}`);
+    const videoUrl = res.data.data;
+    const count = res.data.count || "Unknown";
+    const name = res.data.shaon || "Unnamed";
+    const ext = videoUrl.substring(videoUrl.lastIndexOf(".") + 1);
+    const filePath = `${__dirname}/cache/videomix.${ext}`;
+
+    const callback = () => {
+      api.sendMessage({
+        body: `🎬 𝗦𝗣𝗔𝗬𝗦𝗛𝗘𝗔𝗟 𝗩𝗶𝗱𝗲𝗼 𝗠𝗜𝗫 🎞️\n\n📌 নাম: ${name}\n📁 মোট ভিডিও: ${count}টি\n📂 ক্যাটাগরি: ${category}\n\n🔁 আবার দেখতে: /videomix /next`,
+        attachment: fs.createReadStream(filePath)
+      }, threadID, () => fs.unlinkSync(filePath), messageID);
+    };
+
+    request(videoUrl).pipe(fs.createWriteStream(filePath)).on("close", callback);
+  } catch (err) {
+    console.error(err);
+    return api.sendMessage("😢 ভিডিও আনতে সমস্যা হয়েছে। পরে আবার চেষ্টা করুন!", event.threadID, event.messageID);
+  }
+};
