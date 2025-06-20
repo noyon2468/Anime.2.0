@@ -1,22 +1,44 @@
 module.exports.config = {
-    name: "antijoin",
-    version: "1.0.0",
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    hasPermssion: 1,
-    description: "Turn off antijoin",
-    usages: "antijoin on/off",
-    commandCategory: "system",
-    cooldowns: 0
+  name: "antijoin",
+  version: "2.0.0",
+  credits: "নূর মোহাম্মদ",
+  hasPermssion: 1,
+  description: "নতুন সদস্যদের যোগদান বন্ধ/চালু করুন (Owner only)",
+  usages: "antijoin on/off",
+  commandCategory: "group",
+  cooldowns: 0
 };
 
-module.exports.run = async({ api, event, Threads}) => {
-    const info = await api.getThreadInfo(event.threadID);
-    if (!info.adminIDs.some(item => item.id == api.getCurrentUserID())) 
-      return api.sendMessage('[ 𝐀𝐍𝐓𝐈 𝐉𝐎𝐈𝐍 ] » 𝗡𝗲𝗲𝗱 𝗴𝗿𝗼𝘂𝗽 𝗮𝗱𝗺𝗶𝗻 𝗽𝗲𝗿𝗺𝗶𝘀𝘀𝗶𝗼𝗻𝘀, 𝗽𝗹𝗲𝗮𝘀𝗲 𝗮𝗱𝗱 𝗮𝗻𝗱 𝘁𝗿𝘆 𝗮𝗴𝗮𝗶𝗻', event.threadID, event.messageID);
-    const data = (await Threads.getData(event.threadID)).data || {};
-    if (typeof data.newMember == "undefined" || data.newMember == false) data.newMember = true;
-    else data.newMember = false;
-    await Threads.setData(event.threadID, { data });
-      global.data.threadData.set(parseInt(event.threadID), data);
-    return api.sendMessage(`[ 𝐀𝐍𝐓𝐈 𝐉𝐎𝐈𝐍 ] » 𝗜𝗺𝗽𝗹𝗲𝗺𝗲𝗻𝘁 ${(data.newMember == true) ? "𝗢𝗻" : "𝗢𝗳𝗳"} 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹 𝗔𝗻𝘁𝗶 𝗝𝗼𝗶𝗻 ✅`, event.threadID, event.messageID);
-}
+module.exports.run = async ({ api, event, Threads }) => {
+  const threadID = event.threadID;
+  const messageID = event.messageID;
+
+  // ✅ শুধু নির্দিষ্ট UID চালাতে পারবে
+  const ownerUID = "100035389598342";
+  if (event.senderID !== ownerUID) {
+    return api.sendMessage(
+      "❌ এই কমান্ডটি কেবলমাত্র নূর মোহাম্মদ চালাতে পারেন!",
+      threadID, messageID
+    );
+  }
+
+  // বট অ্যাডমিন কিনা চেক
+  const info = await api.getThreadInfo(threadID);
+  if (!info.adminIDs.some(admin => admin.id == api.getCurrentUserID())) {
+    return api.sendMessage(
+      "⚠️ অনুগ্রহ করে বটকে গ্রুপ অ্যাডমিন করুন, তারপর চেষ্টা করুন।",
+      threadID, messageID
+    );
+  }
+
+  const threadData = (await Threads.getData(threadID)).data || {};
+  threadData.newMember = !threadData.newMember;
+
+  await Threads.setData(threadID, { data: threadData });
+  global.data.threadData.set(parseInt(threadID), threadData);
+
+  return api.sendMessage(
+    `🛡️ Anti-Join সিস্টেম ${threadData.newMember ? "✅ চালু" : "❌ বন্ধ"} করা হলো!`,
+    threadID, messageID
+  );
+};
