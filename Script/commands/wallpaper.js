@@ -3,87 +3,60 @@ const fs = require("fs-extra");
 const path = require("path");
 
 module.exports.config = {
-  name: "Wallpaper",
-  version: "1.0.0",
+  name: "wallpaper",
+  version: "1.0.1",
   hasPermission: 0,
-  credits: "Islamick Cyber Chat ",
-  description: "ফোন ওয়ালপেপার",
+  credits: "Nur Muhammad + ChatGPT",
+  description: "প্রিয় ওয়ালপেপার খুঁজুন",
   usages: "wallpaper [নাম]",
-  commandCategory: "user",
+  commandCategory: "utility",
   cooldowns: 5
 };
 
 module.exports.run = async ({ api, event, args }) => {
-  if (args.length === 0) {
-    api.sendMessage("ছবি অনুসন্ধান করার জন্য একটি নাম প্রদান করুন.🌸", event.threadID, event.messageID);
-    return;
+  if (!args[0]) {
+    return api.sendMessage("🔍 অনুগ্রহ করে একটি ওয়ালপেপারের নাম লিখুন!\n\nউদাহরণ: `wallpaper sunset` 🌇", event.threadID, event.messageID);
   }
 
-  const apiKey = "39178311-acadeb32d7e369897e41dba06";
   const query = encodeURIComponent(args.join(" "));
-  const apiUrl = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&per_page=200`;
+  const apiKey = "39178311-acadeb32d7e369897e41dba06";
+  const apiUrl = `https://pixabay.com/api/?key=${apiKey}&q=${query}&image_type=photo&per_page=30`;
 
   try {
     const response = await axios.get(apiUrl);
-    const wallpapers = response.data.hits.filter(wallpaper => {
-      const imageUrl = wallpaper.largeImageURL;
-      const imageExtension = path.extname(imageUrl);
-      return imageExtension === ".jpg" || imageExtension === ".png";
-    });
+    const hits = response.data.hits;
 
-    if (wallpapers.length === 0) {
-      api.sendMessage("প্রদত্ত প্রশ্নের জন্য কোন ওয়ালপেপার পাওয়া যায়নি.❌", event.threadID, event.messageID);
-      return;
+    if (!hits || hits.length === 0) {
+      return api.sendMessage(`😔 "${args.join(" ")}" এর জন্য কোনো ওয়ালপেপার পাওয়া যায়নি।`, event.threadID, event.messageID);
     }
 
-    let streams = [];
-    let counter = 0;
+    // সর্বোচ্চ 5 টি ছবি পাঠাবে
+    const selected = hits.sort(() => 0.5 - Math.random()).slice(0, 5);
+    const attachments = [];
 
-    for (const wallpaper of wallpapers) {
-      if (counter >= 10) {
-        break;
-      }
+    for (let i = 0; i < selected.length; i++) {
+      const url = selected[i].largeImageURL;
+      const imgPath = path.join(__dirname, `cache/wall${i}.jpg`);
 
-      const imageUrl = wallpaper.largeImageURL;
-      const imageExtension = path.extname(imageUrl);
-
-      let imagePath = path.join(__dirname, `/cache/wallpaper${counter}${imageExtension}`);
-      let hasError = false;
-
-      try {
-        const imageResponse = await axios.get(imageUrl, { responseType: "arraybuffer" });
-        fs.writeFileSync(imagePath, Buffer.from(imageResponse.data, "binary"));
-      } catch (error) {
-        console.error(error);
-        hasError = true;
-      }
-
-      if (!hasError) {
-        streams.push(fs.createReadStream(imagePath).on("end", () => {
-          if (fs.existsSync(imagePath)) {
-            fs.unlink(imagePath, err => {
-              if (err) console.error(err);
-            });
-          }
-        }));
-
-        counter += 1;
-      }
+      const imgData = await axios.get(url, { responseType: 'arraybuffer' });
+      fs.writeFileSync(imgPath, Buffer.from(imgData.data, "binary"));
+      attachments.push(fs.createReadStream(imgPath));
     }
 
-    if (streams.length > 0) {
-      let msg = {
-        body: `📷 আপনার ওয়ালপেপার 🌸`,
-        attachment: streams
-      };
+    // Send and delete after
+    api.sendMessage({
+      body: `📸 এখানে আপনার ওয়ালপেপার:\n👉 ${args.join(" ")}`,
+      attachment: attachments
+    }, event.threadID, () => {
+      // Delete after send
+      for (let i = 0; i < selected.length; i++) {
+        const imgPath = path.join(__dirname, `cache/wall${i}.jpg`);
+        fs.unlinkSync(imgPath);
+      }
+    }, event.messageID);
 
-      api.sendMessage(msg, event.threadID, event.messageID);
-    } else {
-      api.sendMessage("An error occurred while fetching the wallpapers.", event.threadID, event.messageID);
-    }
-
-  } catch (error) {
-    console.error(error);
-    api.sendMessage("An error occurred while fetching wallpapers.", event.threadID, event.messageID);
+  } catch (err) {
+    console.error(err);
+    return api.sendMessage("❌ ওয়ালপেপার আনতে সমস্যা হচ্ছে। দয়া করে পরে চেষ্টা করুন।", event.threadID, event.messageID);
   }
 };
