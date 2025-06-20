@@ -1,117 +1,115 @@
-
 module.exports.config = {
     name: "job",
     version: "1.0.2",
     hasPermssion: 0,
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️", 
-    description: "",
+    credits: "CYBER BOT TEAM + ChatGPT (বাংলা সংস্করণ)",
+    description: "চাকরির মাধ্যমে কয়েন ইনকাম করো!",
     commandCategory: "Economy",
     cooldowns: 5,
     envConfig: {
         cooldownTime: 5000
     }
 };
+
 module.exports.languages = {
-    
-    "en": {
-        "cooldown": "You're done, come back later: %1 minute(s) %2 second(s)."
+    "bn": {
+        "cooldown": "⏳ আবার চেষ্টা করুন %1 মিনিট %2 সেকেন্ড পর।"
     }
-}
-module.exports.handleReply = async ({ event, api, handleReply, Currencies, getText }) => {
+};
+
+module.exports.handleReply = async ({ event, api, handleReply, Currencies }) => {
     const { threadID, messageID, senderID } = event;
     let data = (await Currencies.getData(senderID)).data || {};
-//random coins nhận được khi làm việc ít nhất 200
-var coinscn = Math.floor(Math.random() * 401) + 200; //random coins khi làm ở khu công nghiệp
-var coinsdv = Math.floor(Math.random() * 801) + 200; //random coins khi làm ở khu dịch vụ
-var coinsmd = Math.floor(Math.random() * 401) + 200; //random coins khi làm ở mỏ dầu
-var coinsq = Math.floor(Math.random() * 601) + 200; //random coins khi khai thác quặng
-var coinsdd = Math.floor(Math.random() * 201) + 200; //random coins khi đào đá
-var coinsdd1 = Math.floor(Math.random() * 801) + 200; //random coins khi đào đá
 
-//random things to do
-var rdcn = ['hiring staff', 'hotel administrator', 'at the power plant', 'restaurant chef', 'worker']; //random job when working in industrial park
-var work1 = rdcn[Math.floor(Math.random() * rdcn.length)];   
-
-var rddv = ['plumber', 'neighbors air conditioner repair', 'multi-level sale', 'flyer distribution', 'shipper', 'computer repair', 'tour guide', 'breastfeeding' ]; //random work when working in the service area
-var work2 = rddv[Math.floor(Math.random() * rddv.length)]; 
-
-var rdmd = ['earn 13 barrels of oil', 'earn 8 barrels of oil', 'earn 9 barrels of oil', 'earn 8 barrels of oil', 'steal the oil', 'take water and pour it into oil and sell it']; //random job while working at an oil field
-var work3 = rdmd[Math.floor(Math.random() * rdmd.length)]; 
-
-var rdq = ['iron ore', 'gold ore', 'coal ore', 'lead ore', 'copper ore', 'oil ore']; //random job when mining ore
-var work4 = rdq[Math.floor(Math.random() * rdq.length)]; 
-
-var rddd = ['diamond', 'gold', 'coal', 'emerald', 'iron', 'ordinary stone', 'lazy', 'bluestone']; //random job when digging rock
-var work5 = rddd[Math.floor(Math.random() * rddd.length)]; 
-
-var rddd1 = ['vip guest', 'patent', 'stranger', '23-year-old fool', 'stranger', 'patron', '92-year-old tycoon', '12-year-old boyi']; //random work when digging rock
-var work6 = rddd1[Math.floor(Math.random() * rddd1.length)];
-
-
-var msg = "";
-    switch(handleReply.type) {
-        case "choosee": {
-            
-            switch(event.body) {
-                case "1": msg = `⚡️You are working ${work1} in the industrial zone and earn ${coinscn}$` ; Currencies.increaseMoney(event.senderID, coinscn); break;             
-                case "2": msg = `⚡️You are working ${work2} in the service area and earn ${coinsdv}$`; Currencies.increaseMoney(event.senderID, coinsdv); break;
-                case "3": msg = `⚡️You ${work3} at the open oil and sell ${coinsmd}$`; Currencies.increaseMoney(event.senderID, coinsmd); break;
-                case "4": msg = `⚡️You are mining ${work4} and earn ${coinsq}$`; Currencies.increaseMoney(event.senderID, coinsq); break;
-                case "5": msg = `⚡️You can dig ${work5} and earn ${coinsdd}$` ; Currencies.increaseMoney(event.senderID, coinsdd); break;
-                case "6": msg = `⚡️You choose ${work6} and given ${coinsdd1}$ if xxx 1 night, then you agree right away :)))`; Currencies.increaseMoney(event.senderID, coinsdd1); break;
-                case "7": msg = "⚡️ Coming soon..."; break; //add case if you want 
-                default: break;
-            };
-            const choose = parseInt(event.body);
-            if (isNaN(event.body)) return api.sendMessage("⚡️Please enter 1 con number", event.threadID, event.messageID);
-            if (choose > 7 || choose < 1) return api.sendMessage("⚡️Option is not on the list.", event.threadID, event.messageID); //thay số case vào số 7
-            api.unsendMessage(handleReply.messageID);
-            if (msg == "⚡️Chưa update...") {
-                msg = "⚡️Update soon...";
-            };
-            return api.sendMessage(`${msg}`, threadID, async () => {
-            data.work2Time = Date.now();
-            await Currencies.setData(senderID, { data });
-            
-        });
-
+    const coins = {
+        industry: Math.floor(Math.random() * 401) + 200,
+        service: Math.floor(Math.random() * 801) + 200,
+        oil: Math.floor(Math.random() * 401) + 200,
+        mine: Math.floor(Math.random() * 601) + 200,
+        stone: Math.floor(Math.random() * 201) + 200,
+        cave: Math.floor(Math.random() * 801) + 200,
     };
-}
-}
-module.exports.run = async ({  event, api, handleReply, Currencies, getText }) => {
+
+    const jobs = {
+        industry: ['কর্মচারী নিযুক্ত', 'হোটেল ব্যবস্থাপক', 'বিদ্যুৎ প্ল্যান্টে কাজ', 'রেস্টুরেন্ট শেফ', 'কারখানার শ্রমিক'],
+        service: ['প্লাম্বার', 'এসি সারাই', 'বাজারজাতকরণ', 'ফ্লায়ার বিতরণ', 'শিপার', 'কম্পিউটার সারাই', 'গাইড', 'বেবি কেয়ার'],
+        oil: ['১৩ ব্যারেল তেল উত্তোলন', '৮ ব্যারেল তেল বিক্রি', 'তেল চুরি', 'জলে তেল মিশিয়ে বিক্রি'],
+        mine: ['লোহা', 'সোনা', 'কয়লা', 'সীসা', 'তামা', 'তেলের খনি'],
+        stone: ['হীরা', 'সোনা', 'কয়লা', 'পান্না', 'লোহা', 'পাথর', 'সাদামাটা', 'ব্লুস্টোন'],
+        cave: ['ভিআইপি অতিথি', 'পেটেন্ট', 'অচেনা লোক', '৯২ বছর বয়সী ধনী', '১২ বছরের গুগলি ছেলে']
+    };
+
+    const choice = event.body.trim();
+    let msg = "";
+
+    switch (choice) {
+        case "1":
+            msg = `🏭 আপনি এখন "${jobs.industry[Math.floor(Math.random() * jobs.industry.length)]}" কাজ করে আয় করলেন ${coins.industry}$`;
+            Currencies.increaseMoney(senderID, coins.industry);
+            break;
+        case "2":
+            msg = `🧰 আপনি এখন "${jobs.service[Math.floor(Math.random() * jobs.service.length)]}" কাজ করে আয় করলেন ${coins.service}$`;
+            Currencies.increaseMoney(senderID, coins.service);
+            break;
+        case "3":
+            msg = `🛢️ আপনি "${jobs.oil[Math.floor(Math.random() * jobs.oil.length)]}" করে পেলেন ${coins.oil}$`;
+            Currencies.increaseMoney(senderID, coins.oil);
+            break;
+        case "4":
+            msg = `⛏️ আপনি খনি থেকে "${jobs.mine[Math.floor(Math.random() * jobs.mine.length)]}" তুলে পেলেন ${coins.mine}$`;
+            Currencies.increaseMoney(senderID, coins.mine);
+            break;
+        case "5":
+            msg = `🪨 আপনি "${jobs.stone[Math.floor(Math.random() * jobs.stone.length)]}" পাথর খনন করে পেলেন ${coins.stone}$`;
+            Currencies.increaseMoney(senderID, coins.stone);
+            break;
+        case "6":
+            msg = `😳 আপনি "${jobs.cave[Math.floor(Math.random() * jobs.cave.length)]}" সিলেক্ট করে পেলেন ${coins.cave}$... বিস্তারিত জানতে 😶`;
+            Currencies.increaseMoney(senderID, coins.cave);
+            break;
+        case "7":
+            msg = "🔧 ফিচারটি আপডেট করা হচ্ছে...";
+            break;
+        default:
+            return api.sendMessage("❌ দয়া করে ১-৭ পর্যন্ত সংখ্যা নির্বাচন করুন।", threadID, messageID);
+    }
+
+    api.unsendMessage(handleReply.messageID);
+    data.work2Time = Date.now();
+    await Currencies.setData(senderID, { data });
+
+    return api.sendMessage(msg, threadID, messageID);
+};
+
+module.exports.run = async ({ event, api, Currencies }) => {
     const { threadID, messageID, senderID } = event;
     const cooldown = global.configModule[this.config.name].cooldownTime;
     let data = (await Currencies.getData(senderID)).data || {};
-    //cooldownTime for each receipt 
-    if (typeof data !== "undefined" && cooldown - (Date.now() - data.work2Time) > 0) {
 
-        var time = cooldown - (Date.now() - data.work2Time),
-            minutes = Math.floor(time / 60000),
-            seconds = ((time % 60000) / 1000).toFixed(0); 
-        return api.sendMessage(getText("cooldown", minutes, (seconds < 10 ? "0" + seconds : seconds)), event.threadID, event.messageID);
+    if (data.work2Time && cooldown - (Date.now() - data.work2Time) > 0) {
+        var timeLeft = cooldown - (Date.now() - data.work2Time);
+        var minutes = Math.floor(timeLeft / 60000);
+        var seconds = ((timeLeft % 60000) / 1000).toFixed(0);
+        return api.sendMessage(`⏳ আবার চেষ্টা করুন ${minutes} মিনিট ${seconds < 10 ? "0" + seconds : seconds} সেকেন্ড পর।`, threadID, messageID);
     }
-    else {    
-    return api.sendMessage("Coin Earn Job Center" +
-  /*công nghiệp*/ "\n\n1. work1" +
-  /*dịch vụ*/  "\n2. work2." +
-  /*Mỏ dầu*/ "\n3. work3." +
-  /*Quặng*/ "\n4. work4" +
-  /*Đào đá*/ "\n5. work5" +
-  /*cave*/    "\n6. work6" +
-                "\n7. Update soon..." +
-                "\n\n⚡️Please reply to the message and choose by number" //add case display here ||  \n[number]. [Career]" +
-            , event.threadID, (error, info) => {
-                data.work2Time = Date.now();
-        global.client.handleReply.push({
-            type: "choosee",
-            name: this.config.name,
-            author: event.senderID,
-            messageID: info.messageID
-          })  
-        })
-    }
-}
-/*
-@credit P-SeverTeam
-@Vui lòng không đổi credit!
-*/
+
+    return api.sendMessage(
+        `🍀 আজকের কাজের তালিকা:\n\n` +
+        `1. 🏭 ইন্ডাস্ট্রি জোন\n` +
+        `2. 🧰 সার্ভিস সেক্টর\n` +
+        `3. 🛢️ তেলের খনি\n` +
+        `4. ⛏️ খনিজ খনি\n` +
+        `5. 🪨 পাথর খনন\n` +
+        `6. 🫣 রহস্যময় অপশন\n` +
+        `7. 🔧 আসছে...\n\n` +
+        `✅ একটি অপশন নম্বর রিপ্লাই করুন (১-৭)`, threadID,
+        (err, info) => {
+            global.client.handleReply.push({
+                type: "choosee",
+                name: this.config.name,
+                author: senderID,
+                messageID: info.messageID
+            });
+        }
+    );
+};
