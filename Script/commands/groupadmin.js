@@ -1,36 +1,27 @@
 module.exports.config = {
     name: "listadmin",
-    version: '1.0.0',
+    version: '1.0.1',
     hasPermssion: 0,
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    description: "List of group administrators",
-    commandCategory: "Box Chat",
-    usages: "dsqtv",
-    cooldowns: 5,
-    dependencies: []
+    credits: "নূর মোহাম্মদ ",
+    description: "গ্রুপের সকল অ্যাডমিনদের তালিকা দেখায়",
+    commandCategory: "group",
+    usages: "listadmin",
+    cooldowns: 5
 };
 
-module.exports.run = async function({ api, event, args, Users }) {
-    /*try {
-        var threadInfo = await api.getThreadInfo(args[0]);
-    } catch (e) {
-        var threadInfo = await api.getThreadInfo(event.threadID);
-    }*/
-    var threadInfo = await api.getThreadInfo(event.threadID);
-    let qtv = threadInfo.adminIDs.length;
-    var listad = '';
-    var qtv2 = threadInfo.adminIDs;
-    var fs = global.nodemodule["fs-extra"];
-    dem = 1;
-    for (let i = 0; i < qtv2.length; i++) {
-        const info = (await api.getUserInfo(qtv2[i].id));
-        const name = info[qtv2[i].id].name;
-        listad += '' + `${dem++}` + '. ' + name + '\n';
+module.exports.run = async function({ api, event }) {
+    const threadInfo = await api.getThreadInfo(event.threadID);
+    const adminIDs = threadInfo.adminIDs;
+    let msg = `👑 এই গ্রুপে মোট ${adminIDs.length} জন অ্যাডমিন রয়েছে:\n\n`;
+    let count = 1;
+
+    for (const admin of adminIDs) {
+        const userInfo = await api.getUserInfo(admin.id);
+        const name = userInfo[admin.id].name || "Unknown";
+        msg += `${count++}. ${name}\n`;
     }
 
-    api.sendMessage(
-        `The list of ${qtv} administrators includes:\n${listad}`,
-        event.threadID,
-        event.messageID
-    );
+    msg += `\n━━━━━━━━━━━━━━━\n🔰 মডিউল নির্মাতা: নূর মোহাম্মদ\n🌐 ফেসবুক: https://www.facebook.com/nur.mohammad.367314\n❤️ Smart Bot by ChatGPT`;
+
+    return api.sendMessage(msg, event.threadID, event.messageID);
 };
