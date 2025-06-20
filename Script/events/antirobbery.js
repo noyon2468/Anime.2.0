@@ -1,43 +1,40 @@
 module.exports.config = {
-    name: "guard",
-    eventType: ["log:thread-admins"],
-    version: "1.0.0",
-    credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
-    description: "Prevent admin changes",
+  name: "guard",
+  version: "2.0.0",
+  credits: "নূর মোহাম্মদ",
+  description: "Admin Guard চালু/বন্ধ এবং অবস্থা দেখার কমান্ড",
+  commandCategory: "group",
+  usages: "[on/off/status]",
+  cooldowns: 5
 };
 
-module.exports.run = async function ({ event, api, Threads, Users }) {
-    const { logMessageType, logMessageData, senderID } = event;
- 	let data = (await Threads.getData(event.threadID)).data
- 	if (data.guard == false) return;
-    if (data.guard == true ) {
-        switch (logMessageType) {
-          case "log:thread-admins": {
-            if (logMessageData.ADMIN_EVENT == "add_admin") {
-              if(event.author == api.getCurrentUserID()) return
-              if(logMessageData.TARGET_ID == api.getCurrentUserID()) return
-              else {
-                api.changeAdminStatus(event.threadID, event.author, false, editAdminsCallback)
-                api.changeAdminStatus(event.threadID, logMessageData.TARGET_ID, false)
-                function editAdminsCallback(err) {
-                  if (err) return api.sendMessage("Che!! stupid. 😝", event.threadID, event.messageID);
-                    return api.sendMessage(`» Activate anti-robbery box 🖤 mode`, event.threadID, event.messageID);
-                }
-              }
-            }
-            else if (logMessageData.ADMIN_EVENT == "remove_admin") {
-              if(event.author == api.getCurrentUserID()) return
-              if(logMessageData.TARGET_ID == api.getCurrentUserID()) return
-              else {
-                api.changeAdminStatus(event.threadID, event.author, false, editAdminsCallback)
-                api.changeAdminStatus(event.threadID, logMessageData.TARGET_ID, true)
-                function editAdminsCallback(err) {
-                if (err) return api.sendMessage("Che!! Stupid 😝", event.threadID, event.messageID);
-                return api.sendMessage(`» Activate anti-robbery box 🖤 mode`, event.threadID, event.messageID);
-              }
-            }
-          }
-        }
-      }
-    }
-}
+module.exports.run = async function({ api, event, args, Threads }) {
+  const { threadID, messageID, senderID } = event;
+  const data = await Threads.getData(threadID) || {};
+  const threadData = data.data || {};
+
+  const input = args[0]?.toLowerCase();
+
+  if (!["on", "off", "status"].includes(input)) {
+    return api.sendMessage(
+      `🛡️ Guard System কমান্ড:\n\n• guard on ➤ চালু করো\n• guard off ➤ বন্ধ করো\n• guard status ➤ বর্তমান অবস্থা`,
+      threadID, messageID
+    );
+  }
+
+  switch (input) {
+    case "on":
+      threadData.guard = true;
+      await Threads.setData(threadID, { data: threadData });
+      return api.sendMessage(`✅ Admin Guard এখন *চালু* আছে!\n🔐 কেউ অ্যাডমিন পরিবর্তন করতে পারবে না।`, threadID, messageID);
+
+    case "off":
+      threadData.guard = false;
+      await Threads.setData(threadID, { data: threadData });
+      return api.sendMessage(`⚠️ Admin Guard এখন *বন্ধ* আছে!\n🧨 সবাই অ্যাডমিন পরিবর্তন করতে পারবে।`, threadID, messageID);
+
+    case "status":
+      const status = threadData.guard === true ? "🔒 চালু" : "🔓 বন্ধ";
+      return api.sendMessage(`📊 Guard Status: ${status}`, threadID, messageID);
+  }
+};
