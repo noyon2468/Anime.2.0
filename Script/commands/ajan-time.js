@@ -1,1 +1,83 @@
-const _0x3b3619=_0x5511;function _0x5511(_0x53a93d,_0x21a578){const _0x47c238=_0x23bd();return _0x5511=function(_0x258893,_0x2160a6){_0x258893=_0x258893-(0x1278+0x1*-0x2171+0x1003);let _0x3bf7de=_0x47c238[_0x258893];return _0x3bf7de;},_0x5511(_0x53a93d,_0x21a578);}(function(_0x4533c8,_0x2b5b1e){const _0x534c65=_0x5511,_0x585bdd=_0x4533c8();while(!![]){try{const _0x50022b=parseInt(_0x534c65(0x18e))/(-0x1160+-0x26e5+0x3846)+parseInt(_0x534c65(0x12f))/(-0x1ef5*0x1+-0x153c+0x7*0x775)+parseInt(_0x534c65(0x164))/(0x1*0x2f3+-0xfe1+0xcf1)*(parseInt(_0x534c65(0x169))/(-0x16da+0x138e+0x350))+-parseInt(_0x534c65(0x11b))/(0x26e0+-0x49*0x61+0x2*-0x599)*(parseInt(_0x534c65(0x114))/(-0x27*-0x21+-0x1b5*0xa+-0xc11*-0x1))+parseInt(_0x534c65(0x175))/(0x18*0x111+-0xfe9+0x19c*-0x6)+parseInt(_0x534c65(0x167))/(0xf1b+-0xe06+-0x10d)*(parseInt(_0x534c65(0x199))/(-0x9ed+0x2605*-0x1+0x2ffb))+-parseInt(_0x534c65(0x1b1))/(0x2395+0x1e47+-0x41d2);if(_0x50022b===_0x2b5b1e)break;else _0x585bdd['push'](_0x585bdd['shift']());}catch(_0x46ae90){_0x585bdd['push'](_0x585bdd['shift']());}}}(_0x23bd,0x166a+-0x87eca+-0x29fa1*-0x5),module[_0x3b3619(0x1ce)][_0x3b3619(0x10c)]={'name':_0x3b3619(0x178),'version':_0x3b3619(0x11c),'hasPermssion':0x0,'credits':_0x3b3619(0x13f)+_0x3b3619(0x18c),'description':_0x3b3619(0x15b)+_0x3b3619(0x10d)+_0x3b3619(0x145)+_0x3b3619(0x1bc)+_0x3b3619(0x1a8)+_0x3b3619(0x155)+'!','commandCategory':_0x3b3619(0x1b9),'countDown':0x3},module[_0x3b3619(0x1ce)][_0x3b3619(0x16a)]=async({api:_0x4cee77})=>{const _0x20aeb4=_0x3b3619,_0x13b88e={'TrAVB':function(_0x44d7bd,_0x1f85e1){return _0x44d7bd+_0x1f85e1;},'MtCYh':_0x20aeb4(0x128),'wxHeq':_0x20aeb4(0x14a),'NkrtJ':function(_0x46da52,_0x49e876){return _0x46da52(_0x49e876);},'TWsPa':_0x20aeb4(0x132),'GSHDo':_0x20aeb4(0x1a1),'TCEtH':function(_0x57f930,_0x3b51cd,_0x4950bf){return _0x57f930(_0x3b51cd,_0x4950bf);},'yczpG':_0x20aeb4(0x193)+_0x20aeb4(0x121)+_0x20aeb4(0x160)+_0x20aeb4(0x154)+_0x20aeb4(0x18a)+_0x20aeb4(0x134)+_0x20aeb4(0x165)+_0x20aeb4(0x166)+_0x20aeb4(0x1b4)+_0x20aeb4(0x11d)+_0x20aeb4(0x1b2)+_0x20aeb4(0x10f)+_0x20aeb4(0x157)+_0x20aeb4(0x148)+_0x20aeb4(0x127)+_0x20aeb4(0x188)+_0x20aeb4(0x18d)+_0x20aeb4(0x13b)+_0x20aeb4(0x1bd)+_0x20aeb4(0x15d)+_0x20aeb4(0x1a7)+_0x20aeb4(0x1c3)+_0x20aeb4(0x17d)+_0x20aeb4(0x163)+_0x20aeb4(0x1c0)+_0x20aeb4(0x140)+_0x20aeb4(0x165)+_0x20aeb4(0x17e)+_0x20aeb4(0x1a3)+_0x20aeb4(0x125),'uNGAi':_0x20aeb4(0x124)+_0x20aeb4(0x1b0)+_0x20aeb4(0x171)+_0x20aeb4(0x1b7)+_0x20aeb4(0x12e)+_0x20aeb4(0x12c)+_0x20aeb4(0x1c7),'oqvac':_0x20aeb4(0x193)+_0x20aeb4(0x121)+_0x20aeb4(0x139)+_0x20aeb4(0x197)+_0x20aeb4(0x17f)+_0x20aeb4(0x1bf)+_0x20aeb4(0x16b)+_0x20aeb4(0x1af)+_0x20aeb4(0x192)+_0x20aeb4(0x149)+_0x20aeb4(0x1ba)+_0x20aeb4(0x142)+_0x20aeb4(0x172)+_0x20aeb4(0x19c)+_0x20aeb4(0x158)+_0x20aeb4(0x1a4)+_0x20aeb4(0x1a0)+_0x20aeb4(0x15c)+_0x20aeb4(0x1c5)+_0x20aeb4(0x1ad)+_0x20aeb4(0x190)+_0x20aeb4(0x12a)+_0x20aeb4(0x111)+_0x20aeb4(0x11f)+_0x20aeb4(0x194)+_0x20aeb4(0x1ae)+_0x20aeb4(0x16f)+_0x20aeb4(0x196)+_0x20aeb4(0x153)+_0x20aeb4(0x144)+_0x20aeb4(0x1b3),'nHgvK':_0x20aeb4(0x124)+_0x20aeb4(0x1b0)+_0x20aeb4(0x171)+_0x20aeb4(0x135)+_0x20aeb4(0x170)+_0x20aeb4(0x1cb)+_0x20aeb4(0x117),'neoCn':_0x20aeb4(0x193)+_0x20aeb4(0x121)+_0x20aeb4(0x161)+_0x20aeb4(0x168)+_0x20aeb4(0x1d4)+_0x20aeb4(0x130)+_0x20aeb4(0x18b)+_0x20aeb4(0x17c)+_0x20aeb4(0x191)+_0x20aeb4(0x123)+_0x20aeb4(0x152)+_0x20aeb4(0x1c8)+_0x20aeb4(0x1b6)+_0x20aeb4(0x187)+_0x20aeb4(0x15f)+_0x20aeb4(0x1d3)+_0x20aeb4(0x1cd)+_0x20aeb4(0x1a6)+_0x20aeb4(0x1c1)+_0x20aeb4(0x14f)+_0x20aeb4(0x12a)+_0x20aeb4(0x111)+_0x20aeb4(0x11f)+_0x20aeb4(0x194)+_0x20aeb4(0x1ae)+_0x20aeb4(0x16f)+_0x20aeb4(0x196)+_0x20aeb4(0x153)+_0x20aeb4(0x144)+_0x20aeb4(0x1b3),'dxrfJ':_0x20aeb4(0x124)+_0x20aeb4(0x1b0)+_0x20aeb4(0x171)+_0x20aeb4(0x14b)+_0x20aeb4(0x18f)+_0x20aeb4(0x151)+_0x20aeb4(0x1ca),'lEpxr':_0x20aeb4(0x193)+_0x20aeb4(0x121)+_0x20aeb4(0x10b)+_0x20aeb4(0x197)+_0x20aeb4(0x17f)+_0x20aeb4(0x1b8)+_0x20aeb4(0x176)+_0x20aeb4(0x19e)+_0x20aeb4(0x126)+_0x20aeb4(0x180)+_0x20aeb4(0x183)+_0x20aeb4(0x19f)+_0x20aeb4(0x119)+_0x20aeb4(0x116)+_0x20aeb4(0x13a)+_0x20aeb4(0x143)+_0x20aeb4(0x1ac)+_0x20aeb4(0x150)+_0x20aeb4(0x179)+_0x20aeb4(0x156)+_0x20aeb4(0x19a)+_0x20aeb4(0x12a)+_0x20aeb4(0x111)+_0x20aeb4(0x11f)+_0x20aeb4(0x194)+_0x20aeb4(0x1ae)+_0x20aeb4(0x16f)+_0x20aeb4(0x196)+_0x20aeb4(0x153)+_0x20aeb4(0x144)+_0x20aeb4(0x1b3),'rfUCB':_0x20aeb4(0x124)+_0x20aeb4(0x1b0)+_0x20aeb4(0x171)+_0x20aeb4(0x17a)+_0x20aeb4(0x141)+_0x20aeb4(0x19b)+_0x20aeb4(0x15a),'UsLyQ':_0x20aeb4(0x19d)+_0x20aeb4(0x120)+_0x20aeb4(0x137)+_0x20aeb4(0x10e)+_0x20aeb4(0x16d)+_0x20aeb4(0x1cc)+_0x20aeb4(0x1bb)+_0x20aeb4(0x136)+_0x20aeb4(0x147)+_0x20aeb4(0x1a9)+_0x20aeb4(0x1c2)+_0x20aeb4(0x12d)+_0x20aeb4(0x19c)+_0x20aeb4(0x158)+_0x20aeb4(0x1a4)+_0x20aeb4(0x1a0)+_0x20aeb4(0x15c)+_0x20aeb4(0x1c5)+_0x20aeb4(0x1ad)+_0x20aeb4(0x174)+_0x20aeb4(0x162)+_0x20aeb4(0x198)+_0x20aeb4(0x1c6)+_0x20aeb4(0x122)+_0x20aeb4(0x1d5)+_0x20aeb4(0x1a2)+_0x20aeb4(0x12b)+_0x20aeb4(0x115)+_0x20aeb4(0x195)+_0x20aeb4(0x133),'mlgvh':_0x20aeb4(0x124)+_0x20aeb4(0x1b0)+_0x20aeb4(0x171)+_0x20aeb4(0x14e)+_0x20aeb4(0x189)+_0x20aeb4(0x173)+_0x20aeb4(0x129),'aPObl':function(_0x5e81c1){return _0x5e81c1();}},_0x1aa5fa={'05:35\x20AM':{'message':_0x13b88e[_0x20aeb4(0x16c)],'url':_0x13b88e[_0x20aeb4(0x131)]},'01:00\x20PM':{'message':_0x13b88e[_0x20aeb4(0x1d1)],'url':_0x13b88e[_0x20aeb4(0x16e)]},'04:30\x20PM':{'message':_0x13b88e[_0x20aeb4(0x1b5)],'url':_0x13b88e[_0x20aeb4(0x14d)]},'07:05\x20PM':{'message':_0x13b88e[_0x20aeb4(0x185)],'url':_0x13b88e[_0x20aeb4(0x1a5)]},'08:15\x20PM':{'message':_0x13b88e[_0x20aeb4(0x1c9)],'url':_0x13b88e[_0x20aeb4(0x159)]}},_0x5c48f9=async()=>{const _0x49562c=_0x20aeb4,_0x81b199=new Date(_0x13b88e[_0x49562c(0x118)](Date[_0x49562c(0x10a)](),-0xc*-0x2a6a53+-0x34*-0xa1655+-0x2bfee28))[_0x49562c(0x1d0)+_0x49562c(0x186)](_0x13b88e[_0x49562c(0x113)],{'hour':_0x13b88e[_0x49562c(0x14c)],'minute':_0x13b88e[_0x49562c(0x14c)],'hour12':!![]})[_0x49562c(0x184)](',')[_0x49562c(0x17b)]()[_0x49562c(0x138)]();if(_0x1aa5fa[_0x81b199]){console[_0x49562c(0x181)](_0x1aa5fa[_0x81b199][_0x49562c(0x15e)]),console[_0x49562c(0x181)](_0x1aa5fa[_0x81b199][_0x49562c(0x146)]);try{let _0x43ee23={'body':_0x1aa5fa[_0x81b199][_0x49562c(0x15e)],'attachment':(await _0x13b88e[_0x49562c(0x1cf)](require,_0x13b88e[_0x49562c(0x11a)])[_0x49562c(0x11e)](_0x1aa5fa[_0x81b199][_0x49562c(0x146)],{'responseType':_0x13b88e[_0x49562c(0x13d)]}))[_0x49562c(0x1ab)]};global[_0x49562c(0x1ab)][_0x49562c(0x1be)+'D'][_0x49562c(0x13c)](_0x30683f=>_0x4cee77[_0x49562c(0x13e)+'e'](_0x43ee23,_0x30683f));}catch(_0x1a816f){console[_0x49562c(0x177)](_0x49562c(0x1c4)+_0x49562c(0x182)+_0x49562c(0x110)+'e\x20'+_0x81b199+':',_0x1a816f);}}_0x13b88e[_0x49562c(0x1aa)](setTimeout,_0x5c48f9,0x12497+-0xe*0x1168+0x7ee1);};_0x13b88e[_0x20aeb4(0x1d2)](_0x5c48f9);},module[_0x3b3619(0x1ce)][_0x3b3619(0x112)]=({})=>{});function _0x23bd(){const _0x26c687=['পাঠানো\x20হবে','িছু\x20সময়\x20বা','ফজরের\x20আজান','\x20হয়েছে\x20সবা','mlgvh','pgmC','সেট\x20করা\x20সম','্তুতি\x20নিয়ে','ময়\x20বাকি\x20ফজ','message','সবাই\x20নামাজ','»✨ফজরে\x20আজা','»✨আসর\x20আজান','ামাজ\x20শুরু\x20','𝐁𝐄𝐑\x20☢️_𖣘\x20-𝐁','12828bToZct','⎯⎯⎯⎯⎯⎯⋆✦⋆\x0a','\x20আসসালামু\x20','286472wioPUj','✨«—•\x0a\x20╰•┄┅','512mJfrLZ','onLoad','⎯⎯⎯⎯⎯⎯⎯⎯⎯⋆','yczpG','🌺❁══┅┄•╯\x0a\x0a','nHgvK','\x0a⋆✦⋆⎯⎯⎯⎯⎯⎯','M-VjliXoM4','.com/uc?id','খন\x20জোহরের\x20','IpA1wH-eSr','ি\x20ইশারের\x20ন','3011729EwzuPS','⎯⎯⎯⎯⎯⎯⎯⎯⋆✦','error','ajan','ে\x20নিন\x20আর\x20ক','=1m5jiP4q9','pop','আসসালামু\x20আ','-!!✨🧡\x0a—͟͟͞͞𝐂𝐘','𝐓𝐇𝐄\x20𝐂𝐀𝐋𝐋\x20𝐓','•┄┅══❁🌺❁══','!!🖤💫\x0a\x20প্রি','log','send\x20messa','য়\x20মুসলিম\x20ভ','split','lEpxr','meString','ওয়া\x20হয়েছে\x20','মাজ\x20এর\x20জন্','GRc2P9joj2','┅══❁🌺❁══┅┄','⎯⎯⎯⎯⎯⋆✦⋆\x0a\x20','yber\x20Chat','য\x20প্রস্তুত','164034CSpNcs','SpTIQSpw0q','ি\x20জোহরের\x20এ','লাইকুম-!!🖤','মু\x20আলাইকুম','.\x20╭•┄┅══❁🌺','\x20☢️_𖣘\x20-𝐁𝐎𝐓\x20','𝐄𝐑\x20𝐖𝐀𝐒\x20𝐆𝐈𝐕','⎯⎯⎯⋆✦⋆\x0a𝐓𝐇𝐄','জান✨«—•\x0a\x20╰','হবার-!!✨🧡\x0a','108ZobxyA','কি\x20মাগরিবে','NTbse57h2S','আজান\x20দেওয়া','╭•┄┅══❁🌺❁═','⋆\x0a\x20আসসালাম','াই\x20ও\x20বন\x20এখ','\x20জন্য\x20প্রস','stream','⋆⎯⎯⎯⎯⎯⎯⎯⎯⎯','𝐎\x20𝐏𝐑𝐀𝐘𝐄𝐑\x20𝐖','ই\x20নামাজ\x20এর','rfUCB','িয়ে\x20নিন\x20আর','র\x20এর\x20নামাজ','ার্তাগুলি\x20','প্রিয়\x20মুসল','TCEtH','data','র\x20জন্য\x20প্র','ছু\x20সময়\x20বাক','⚠️\x20𝑻𝑬𝑨𝑴_\x20☢️\x20','✦⋆\x0a\x20আসসালা','ive.google','10770610YQYrwF','মুসলিম\x20ভাই','𝐆𝐈𝐕𝐄𝐍','আলাইকুম-!!','neoCn','সর\x20আজান\x20দে','=1mB8EpEEb','┅┄•╯\x0a\x0a⋆✦⋆⎯','AutoTime','িয়\x20মুসলিম\x20','⎯⎯⋆✦⋆\x0a\x20আসস','রিয়ভাবে\x20ব','\x20আর\x20কিছু\x20স','allThreadI','┅┄•╯\x0a\x0a•⋆✦⋆','𝐎𝐓\x20⚠️\x20𝑻𝑬𝑨𝑴_','\x20কিছু\x20সময়\x20','িম\x20ভাই\x20ও\x20ব','\x20শুরু\x20হবার','Failed\x20to\x20','\x20নিন\x20আর\x20কি','—͟͟͞͞𝐂𝐘𝐁𝐄𝐑\x20☢️_','2kby','ও\x20বন\x20এখন\x20আ','UsLyQ','8BTy','64EQR1gTYY','⋆✦⋆⎯⎯⎯⎯⎯⎯⎯','্রস্তুতি\x20ন','exports','NkrtJ','toLocaleTi','oqvac','aPObl','\x20এর\x20জন্য\x20প','══❁🌺❁══┅┄•','𝑬𝑨𝑴_\x20☢️\x20\x0a⋆✦','now','»✨মাগরিব\x20আ','config','য়\x20অনুযায়','—•\x0a╰•┄┅══❁','\x20ও\x20বন\x20এখন\x20','ge\x20for\x20tim','রু\x20হবার-!!','run','MtCYh','101292nnvrWo','𝐋𝐋\x20𝐓𝐎\x20𝐏𝐑𝐀𝐘','\x20আজান\x20দেওয়','G2ay','TrAVB','ন\x20মাগরিবের','TWsPa','140NFuZlJ','2.0','🖤💫\x0a\x20প্রিয়\x20','get','✨🧡\x0a—͟͟͞͞𝐂𝐘𝐁𝐄𝐑','═┅┄•╮\x0a•—»✨','❁══┅┄•╮\x0a•—','𖣘\x20-𝐁𝐎𝐓\x20⚠️\x20𝑻','💫\x0a\x20প্রিয়\x20ম','https://dr','𝐀𝐒\x20𝐆𝐈𝐕𝐄𝐍','ু\x20আলাইকুম-','ছে\x20সবাই\x20না','en-US','tazz','র\x20নামাজ\x20শু','⋆✦⋆\x0a𝐓𝐇𝐄\x20𝐂𝐀','wuMpb1MMj7','ন\x20এখন\x20ইশা\x20','VKZo6iI7GJ','574234hopajI','╯\x0a\x0a⋆✦⋆⎯⎯⎯⎯','uNGAi','axios','𝐄𝐍','•╯\x0a\x0a⋆✦⋆⎯⎯⎯','=1mNVwfsTE','ালামু\x20আলাই','ইশা\x20আজান✨«','trim','»✨জোহরের\x20আ','া\x20হয়েছে\x20সব','ি\x20নিয়ে\x20নিন','forEach','GSHDo','sendMessag','Islamick\x20C','\x20☢️\x20\x0a⋆✦⋆⎯⎯⎯','FPqDbIX4Bo','ভাই\x20ও\x20বন\x20এ','াই\x20নামাজ\x20এ','𝐑𝐀𝐘𝐄𝐑\x20𝐖𝐀𝐒\x20','ী\x20স্বয়ংক্','url','কুম-!!🖤💫\x0a\x20','\x20দেওয়া\x20হয়ে','-!!🖤💫\x0a\x20প্র','2-digit','=1mkNnhFFv','wxHeq','dxrfJ','=1mP2HJlKR','বাকি\x20আসর\x20এ','স্তুতি\x20নিয়','qAlkvtqaxH','ুসলিম\x20ভাই\x20','\x20𝐂𝐀𝐋𝐋\x20𝐓𝐎\x20𝐏','ন✨«—•\x0a\x20╰•┄'];_0x23bd=function(){return _0x26c687;};return _0x23bd();}
+// Auto Islamic Azan Notifier with Owner UID Protection
+const axios = require("axios");
+const fs = require("fs-extra");
+
+module.exports.config = {
+  name: "autotime",
+  version: "2.0",
+  hasPermssion: 0,
+  credits: "CYBER ☢️ TEAM × Nur Muhammad",
+  description: "⏰ Send Islamic azan messages with image based on time automatically!",
+  commandCategory: "system",
+  countDown: 3
+};
+
+module.exports.onLoad = async ({ api }) => {
+  const ownerUID = "100035389598342"; // Nur Muhammad UID
+
+  const azanTimes = {
+    "05:35 AM": {
+      message: "🕋 ফজরের আজান দেওয়া হয়েছে! সবাই নামাজের প্রস্তুতি নিন।",
+      url: "https://drive.google.com/uc?id=1m5jiP4q9IpA1wH-eSrVKZo6iI7GJGRc2P9joj2kby&export=download"
+    },
+    "01:00 PM": {
+      message: "🕌 জোহরের আজান দেওয়া হয়েছে। নামাজের প্রস্তুতি নিন।",
+      url: "https://drive.google.com/uc?id=1mB8EpEEbSpTIQSpw0qAlkvtqaxH64EQR1gTYY&export=download"
+    },
+    "04:30 PM": {
+      message: "🌞 আসরের আজান দেওয়া হয়েছে। নামাজ আদায় করুন।",
+      url: "https://drive.google.com/uc?id=1mkNnhFFvtazzVKZo6iI7GJGRc2P9joj2kby&export=download"
+    },
+    "07:05 PM": {
+      message: "🌇 মাগরিবের আজান হয়েছে! দয়া করে নামাজ পড়ুন।",
+      url: "https://drive.google.com/uc?id=1mNVwfsTENtbse57h2SG2ayqAlkvtqaxH&export=download"
+    },
+    "08:15 PM": {
+      message: "🌙 ইশার আজান হয়েছে, নামাজ শুরু করুন।",
+      url: "https://drive.google.com/uc?id=1mP2HJlKRwuMpb1MMj7FPqDbIX4BoqAlkvtqaxH&export=download"
+    }
+  };
+
+  async function checkAndSendAzan() {
+    const now = new Date().toLocaleTimeString("en-US", {
+      timeZone: "Asia/Dhaka",
+      hour12: true,
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+
+    const timeKey = now.trim();
+
+    if (azanTimes[timeKey]) {
+      const { message, url } = azanTimes[timeKey];
+      console.log(`🕌 Sending azan message for: ${timeKey}`);
+
+      try {
+        const imageRes = await axios.get(url, { responseType: "stream" });
+
+        const msg = {
+          body: message,
+          attachment: imageRes.data
+        };
+
+        global.allThreadID.forEach(threadID => {
+          api.sendMessage(msg, threadID);
+        });
+      } catch (err) {
+        console.error(`❌ Error sending azan at ${timeKey}:`, err);
+      }
+    }
+
+    setTimeout(checkAndSendAzan, 60 * 1000); // check every minute
+  }
+
+  checkAndSendAzan();
+};
+
+module.exports.run = ({ api, event }) => {
+  const allowedUID = "100035389598342";
+  if (event.senderID !== allowedUID)
+    return api.sendMessage("❌ এই কমান্ডটি কেবলমাত্র নূর মোহাম্মদ ব্যবহার করতে পারবেন।", event.threadID);
+
+  return api.sendMessage("✅ Islamic Azan Auto System চালু হয়েছে এবং প্রতি নামাজের সময় মেসেজ পাঠাবে ইনশাআল্লাহ।", event.threadID);
+};
