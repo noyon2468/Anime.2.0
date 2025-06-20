@@ -1,80 +1,81 @@
 module.exports.config = {
- name: "arrest",
- version: "2.0.0",
- hasPermssion: 0,
- credits: "MAHBUB SHAON",
- description: "Arrrest a friend you mention",
- commandCategory: "tagfun",
- usages: "[mention]",
- cooldowns: 2,
- dependencies: {
- "axios": "",
- "fs-extra": "",
- "path": "",
- "jimp": ""
- }
+  name: "arrest",
+  version: "2.1.0",
+  hasPermssion: 0,
+  credits: "নূর মোহাম্মদ + MAHBUB SHAON",
+  description: "একজন বন্ধুকে আটকাও মজার ভঙ্গিতে",
+  commandCategory: "fun-tag",
+  usages: "@mention",
+  cooldowns: 2,
+  dependencies: {
+    "axios": "",
+    "fs-extra": "",
+    "path": "",
+    "jimp": ""
+  }
 };
 
-module.exports.onLoad = async() => {
- const { resolve } = global.nodemodule["path"];
- const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
- const { downloadFile } = global.utils;
- const dirMaterial = __dirname + `/cache/canvas/`;
- const path = resolve(__dirname, 'cache/canvas', 'batgiam.png');
- if (!existsSync(dirMaterial + "canvas")) mkdirSync(dirMaterial, { recursive: true });
- if (!existsSync(path)) await downloadFile("https://i.imgur.com/ep1gG3r.png", path);
-}
+module.exports.onLoad = async () => {
+  const { resolve } = global.nodemodule["path"];
+  const { existsSync, mkdirSync } = global.nodemodule["fs-extra"];
+  const { downloadFile } = global.utils;
+  const dir = __dirname + `/cache/canvas/`;
+  const imgPath = resolve(dir, 'arrest_bg.png');
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  if (!existsSync(imgPath)) await downloadFile("https://i.imgur.com/ep1gG3r.png", imgPath);
+};
 
 async function makeImage({ one, two }) {
- const fs = global.nodemodule["fs-extra"];
- const path = global.nodemodule["path"];
- const axios = global.nodemodule["axios"]; 
- const jimp = global.nodemodule["jimp"];
- const __root = path.resolve(__dirname, "cache", "canvas");
+  const fs = global.nodemodule["fs-extra"];
+  const path = global.nodemodule["path"];
+  const axios = global.nodemodule["axios"];
+  const jimp = global.nodemodule["jimp"];
+  const root = path.resolve(__dirname, "cache", "canvas");
 
- let batgiam_img = await jimp.read(__root + "/batgiam.png");
- let pathImg = __root + `/batgiam_${one}_${two}.png`;
- let avatarOne = __root + `/avt_${one}.png`;
- let avatarTwo = __root + `/avt_${two}.png`;
- 
- let getAvatarOne = (await axios.get(`https://graph.facebook.com/${one}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' })).data;
- fs.writeFileSync(avatarOne, Buffer.from(getAvatarOne, 'utf-8'));
- 
- let getAvatarTwo = (await axios.get(`https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=6628568379%7Cc1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' })).data;
- fs.writeFileSync(avatarTwo, Buffer.from(getAvatarTwo, 'utf-8'));
- 
- let circleOne = await jimp.read(await circle(avatarOne));
- let circleTwo = await jimp.read(await circle(avatarTwo));
- batgiam_img.resize(500, 500).composite(circleOne.resize(100, 100), 375, 9).composite(circleTwo.resize(100, 100), 160, 92);
- 
- let raw = await batgiam_img.getBufferAsync("image/png");
- 
- fs.writeFileSync(pathImg, raw);
- fs.unlinkSync(avatarOne);
- fs.unlinkSync(avatarTwo);
- 
- return pathImg;
-}
-async function circle(image) {
- const jimp = require("jimp");
- image = await jimp.read(image);
- image.circle();
- return await image.getBufferAsync("image/png");
+  const baseImg = await jimp.read(root + "/arrest_bg.png");
+  const outPath = root + `/arrest_${one}_${two}.png`;
+  const avatar1 = root + `/avt_${one}.png`;
+  const avatar2 = root + `/avt_${two}.png`;
+
+  const res1 = await axios.get(`https://graph.facebook.com/${one}/picture?width=512&height=512&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' });
+  fs.writeFileSync(avatar1, Buffer.from(res1.data, 'utf-8'));
+
+  const res2 = await axios.get(`https://graph.facebook.com/${two}/picture?width=512&height=512&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662`, { responseType: 'arraybuffer' });
+  fs.writeFileSync(avatar2, Buffer.from(res2.data, 'utf-8'));
+
+  const circle1 = await jimp.read(await circle(avatar1));
+  const circle2 = await jimp.read(await circle(avatar2));
+
+  baseImg.resize(500, 500)
+    .composite(circle1.resize(100, 100), 375, 9)
+    .composite(circle2.resize(100, 100), 160, 92);
+
+  const finalBuffer = await baseImg.getBufferAsync("image/png");
+  fs.writeFileSync(outPath, finalBuffer);
+  fs.unlinkSync(avatar1);
+  fs.unlinkSync(avatar2);
+  return outPath;
 }
 
-module.exports.run = async function ({ event, api, args }) {
- const fs = global.nodemodule["fs-extra"];
- const { threadID, messageID, senderID } = event;
- var mention = Object.keys(event.mentions)[0]
- let tag = event.mentions[mention].replace("@", "");
- if (!mention) return api.sendMessage("Please mention 1 Person", threadID, messageID);
- else {
- var one = senderID, two = mention;
- return makeImage({ one, two }).then(path => api.sendMessage({ body: "╭──────•◈•───────╮\n 𝗜𝘀𝗹𝗮𝗺𝗶𝗰𝗸 𝗰𝗵𝗮𝘁 𝗯𝗼𝘁 \n\n—হালা গরু চোর তোরে আজকে হাতে নাতে ধরছি পালাবি কই_😸💁‍♀️" + tag + '\n\n\n𝗠𝗔𝗗𝗘 𝗕𝗬:\n Ullash ッ\n╰──────•◈•───────╯',
- mentions: [{
- tag: tag,
- id: mention
- }],
- attachment: fs.createReadStream(path) }, threadID, () => fs.unlinkSync(path), messageID));
- }
+async function circle(imgPath) {
+  const jimp = require("jimp");
+  const img = await jimp.read(imgPath);
+  img.circle();
+  return await img.getBufferAsync("image/png");
 }
+
+module.exports.run = async function ({ event, api }) {
+  const fs = global.nodemodule["fs-extra"];
+  const { threadID, messageID, senderID } = event;
+  const mention = Object.keys(event.mentions)[0];
+  const tag = event.mentions[mention]?.replace("@", "") || "বন্ধু";
+
+  if (!mention) return api.sendMessage("⚠️ একজনকে মেনশন করো যাকে আটকাতে চাও!", threadID, messageID);
+
+  const path = await makeImage({ one: senderID, two: mention });
+  return api.sendMessage({
+    body: `🚨 গ্রেফতার অভিযান সফল 🚨\n\n👉 ${tag} হালায় গরু চুরি করছিলো! এখন ধরা খাইছে পুলিশের হাতে 😂\n\n📸 প্রমাণ সহ ছবি নিচে দেওয়া হলো:\n\n🌀 কাস্টমাইজড বাই: নূর মোহাম্মদ`,
+    mentions: [{ tag: tag, id: mention }],
+    attachment: fs.createReadStream(path)
+  }, threadID, () => fs.unlinkSync(path), messageID);
+};
