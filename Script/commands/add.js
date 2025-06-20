@@ -1,40 +1,47 @@
 const axios = require('axios');
 
 module.exports.config = {
- name: "add",
- version: "1.0.0",
- hasPermission: 0,
- credits: "Shaon",
- description: "Send a random sad video",
- commandCategory: "media",
- usages: "",
- cooldowns: 5
+  name: "add",
+  version: "1.0.1",
+  hasPermission: 0,
+  credits: "নূর মোহাম্মদ + Shaon + ChatGPT",
+  description: "Reply করা ভিডিও/ছবির URL নির্দিষ্ট নামে সংরক্ষণ করে",
+  commandCategory: "media",
+  usages: "add [name] (reply video/image)",
+  cooldowns: 5
 };
 
 module.exports.run = async ({ api, event, args }) => {
- try {
- const imageUrl = event.messageReply.attachments[0].url;
- const videoName = args.join(" ").trim(); 
+  try {
+    const { messageReply, threadID, messageID } = event;
 
- if (!videoName) {
- return api.sendMessage("Please provide a name for the video.", event.threadID, event.messageID);
- }
- const apis1 = await axios.get('https://raw.githubusercontent.com/shaonproject/Shaon/main/api.json')
- const Shaon1 = apis1.data.imgur
- 
+    if (!messageReply || !messageReply.attachments || messageReply.attachments.length === 0) {
+      return api.sendMessage("📌 দয়া করে কোনো ভিডিও বা ছবিতে রিপ্লাই করে কমান্ডটি দিন!", threadID, messageID);
+    }
 
- const imgurResponse = await axios.get(`${Shaon1}/imgur?link=${encodeURIComponent(imageUrl)}`);
- const imgurLink = imgurResponse.data.uploaded.image;
- 
- const apis = await axios.get('https://raw.githubusercontent.com/shaonproject/Shaon/main/api.json');
- const Shaon = apis.data.api;
+    const fileUrl = messageReply.attachments[0].url;
+    const name = args.join(" ").trim();
 
- const response = await axios.get(`${Shaon}/video/random?name=${encodeURIComponent(videoName)}&url=${encodeURIComponent(imgurLink)}`);
- 
- api.sendMessage(`💌MESSAGE: URL ADDED SUCCESSFULLY\n🟡NAME: ${response.data.name}\n🖇️URL: ${response.data.url}`, event.threadID, event.messageID);
+    if (!name) return api.sendMessage("📌 ভিডিওর একটি নাম দিন!\nউদাহরণ: add আমার_প্রিয়_ভিডিও", threadID, messageID);
 
- } catch (e) {
- console.log(e);
- api.sendMessage(`An error occurred: ${e.message}`, event.threadID, event.messageID);
- }
+    const apiConfig = (await axios.get('https://raw.githubusercontent.com/shaonproject/Shaon/main/api.json')).data;
+    const imgurApi = apiConfig.imgur;
+    const mainApi = apiConfig.api;
+
+    // Upload to imgur
+    const imgurRes = await axios.get(`${imgurApi}/imgur?link=${encodeURIComponent(fileUrl)}`);
+    const uploadedUrl = imgurRes.data.uploaded.image;
+
+    // Save to database via API
+    const saveRes = await axios.get(`${mainApi}/video/random?name=${encodeURIComponent(name)}&url=${encodeURIComponent(uploadedUrl)}`);
+    
+    return api.sendMessage(
+      `✅ ভিডিও যুক্ত হয়েছে সফলভাবে!\n\n🔹 নাম: ${saveRes.data.name}\n🔗 লিংক: ${saveRes.data.url}`,
+      threadID, messageID
+    );
+    
+  } catch (e) {
+    console.error(e);
+    return api.sendMessage(`❌ ত্রুটি: ${e.message}`, event.threadID, event.messageID);
+  }
 };
