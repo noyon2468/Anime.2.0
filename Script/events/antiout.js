@@ -1,22 +1,41 @@
 module.exports.config = {
- name: "antiout",
- eventType: ["log:unsubscribe"],
- version: "0.0.1",
- credits: "𝐂𝐘𝐁𝐄𝐑 ☢️_𖣘 -𝐁𝐎𝐓 ⚠️ 𝑻𝑬𝑨𝑴_ ☢️",
- description: "Listen events"
+  name: "antiout",
+  eventType: ["log:unsubscribe"],
+  version: "1.1.0",
+  credits: "নূর মোহাম্মদ",
+  description: "কেউ নিজের ইচ্ছায় লিভ নিলে আবার এড করে দেয়"
 };
 
-module.exports.run = async({ event, api, Threads, Users }) => {
- let data = (await Threads.getData(event.threadID)).data || {};
- if (data.antiout == false) return;
- if (event.logMessageData.leftParticipantFbId == api.getCurrentUserID()) return;
- const name = global.data.userName.get(event.logMessageData.leftParticipantFbId) || await Users.getNameUser(event.logMessageData.leftParticipantFbId);
- const type = (event.author == event.logMessageData.leftParticipantFbId) ? "self-separation" : "Koi Ase Pichware Mai Lath Marta Hai?";
- if (type == "self-separation") {
-  api.addUserToGroup(event.logMessageData.leftParticipantFbId, event.threadID, (error, info) => {
-   if (error) {
-    api.sendMessage(`সরি বস আবালরে এড় করতে পারলাম না \n ${name} এই আবালরে ব্লক করছে অথবা তার আইডিতে মেসেঞ্জার অপশন তাই এড করতে পারলাম না😞 \n\n ──────·····✦·····──── \n 𝗜𝘀𝗹𝗮𝗺𝗶𝗰𝗸 𝗰𝗵𝗮𝘁 𝗯𝗼𝘁 | ᵁᴸᴸ⁴ˢᴴ `, event.threadID)
-   } else api.sendMessage(`শোন, ${name} এই গ্রুপ হইলো গ্যাং! \n এখান থেকে যাইতে হইলে এড়মিনের ক্লিয়ারেন্স লাগে! \nতুই পারমিশন ছাড়া লিভ নিছোস – তোকে আবার মাফিয়া স্টাইলে এড় দিলাম। \n\n ── ·······✦·······──── \n 𝗜𝘀𝗹𝗮𝗺𝗶𝗰𝗸 𝗰𝗵𝗮𝘁 𝗯𝗼𝘁 | ᵁᴸᴸ⁴ˢᴴ `, event.threadID);
-  })
- }
-}
+module.exports.run = async ({ event, api, Threads, Users }) => {
+  const { threadID, logMessageData, author } = event;
+  const leftUID = logMessageData.leftParticipantFbId;
+  const botID = api.getCurrentUserID();
+
+  // নিজেই যদি লিভ হয় (বট), স্কিপ করো
+  if (leftUID == botID) return;
+
+  const threadData = await Threads.getData(threadID);
+  const settings = threadData.data || {};
+  if (settings.antiout !== true) return;
+
+  const userName = global.data.userName.get(leftUID) || await Users.getNameUser(leftUID);
+
+  const isSelfLeave = leftUID == author;
+
+  if (isSelfLeave) {
+    // আবার এড করো
+    api.addUserToGroup(leftUID, threadID, (err) => {
+      if (err) {
+        return api.sendMessage(
+          `❌ ${userName} কে আবার এড করা গেলো না!\nসম্ভবত উনি বটকে ব্লক করেছে বা তার প্রোফাইলে মেসেজ অন না 😞`,
+          threadID
+        );
+      }
+
+      return api.sendMessage(
+        `😼 শোন শালায়!\n${userName}, তুই অনুমতি ছাড়া গ্রুপ ছাড়সোস?\n\n🛑 এখানে যাইতে হলে নূর মোহাম্মদের অনুমতি লাগে!\nতোরে আবার mafia style-এ এড দিয়া দিলাম! 😈`,
+        threadID
+      );
+    });
+  }
+};
