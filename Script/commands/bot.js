@@ -1,42 +1,55 @@
+const fs = require("fs-extra");
 const axios = require("axios");
+const path = __dirname + "/../../data/teach.json";
 
 module.exports.config = {
   name: "Obot",
-  version: "2.0.0",
+  version: "5.0.0",
   credits: "নূর মোহাম্মদ + ChatGPT",
-  description: "AI auto-reply like ChatGPT",
-  eventType: ["message", "message_reply"],
-  hasPermssion: 0
+  hasPermssion: 0,
+  usePrefix: false,
+  commandCategory: "no-prefix",
+  usages: "Auto AI reply to everything",
+  cooldowns: 1,
+  eventType: ["message", "message_reply"]
 };
 
 module.exports.handleEvent = async function ({ api, event }) {
-  const message = event.body;
-  if (!message || message.length > 200) return;
+  const msg = event.body?.toLowerCase();
+  if (!msg || msg.length > 200) return;
 
-  const prompt = `User: ${message}\nAI (friendly, emotional, smart, Bangla-English mix, short reply):`;
+  // ✅ Teach reply system
+  let teachData = {};
+  if (fs.existsSync(path)) {
+    teachData = JSON.parse(fs.readFileSync(path));
+  }
+  if (teachData[msg]) {
+    return api.sendMessage(teachData[msg], event.threadID, event.messageID);
+  }
 
+  // ✅ Random funny personality reply (30% chance)
+  const personalityReplies = [
+    "তুমি এত কিউট কেনো? 😳",
+    "বস নূর মোহাম্মদ এর জন্য দোয়া কইরো ❤️",
+    "মন খারাপ শুনলেই খারাপ লাগে... কিস দেই? 😘",
+    "তুমি না আমার খুব স্পেশাল 🥺",
+    "ভালো থেকো সবসময়, আমি পাশে আছি 🌸",
+    "হঠাৎ মনে পড়ে গেলে বলো 😇",
+    "তুমি বট বললে কষ্ট পাই 😿 জানু বলো 🥰"
+  ];
+  if (Math.random() < 0.3) { // 30% chance
+    const reply = personalityReplies[Math.floor(Math.random() * personalityReplies.length)];
+    return api.sendMessage(reply, event.threadID, event.messageID);
+  }
+
+  // ✅ Fallback AI reply (SimSimi)
   try {
-    const gptReply = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.85
-      },
-      {
-        headers: {
-          Authorization: `Bearer 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`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    const reply = gptReply.data.choices[0].message.content;
-    if (reply)
-      return api.sendMessage(reply.trim(), event.threadID, event.messageID);
-  } catch (err) {
-    console.error("❌ Obot API Error:", err.message);
-    return api.sendMessage("🥲 দুঃখিত, এখন আমি উত্তর দিতে পারছি না...", event.threadID, event.messageID);
+    const res = await axios.get(`https://simsimi.fun/api/v2/?mode=talk&lang=bn&message=${encodeURIComponent(msg)}&filter=false`);
+    if (res?.data?.success) {
+      return api.sendMessage(`🤖 ${res.data.success}`, event.threadID, event.messageID);
+    }
+  } catch (e) {
+    return api.sendMessage("🥲 এখন কিছু বলার মুডে নেই... পরে এসো", event.threadID, event.messageID);
   }
 };
 
