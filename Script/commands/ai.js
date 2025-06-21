@@ -1,55 +1,41 @@
-const axios = require('axios');
-const fs = require('fs-extra');
+const axios = require("axios");
 
 module.exports.config = {
   name: "ai",
   version: "1.1.0",
   credits: "নূর মোহাম্মদ + ChatGPT",
-  description: "Gemini AI দ্বারা প্রশ্নের উত্তর দিন (ছবি সহ প্রশ্নও সাপোর্ট করে)",
-  commandCategory: "ai-chat",
-  usages: "[প্রশ্ন বা reply সহ]",
-  cooldowns: 3
+  description: "Ask anything with AI (OpenAI GPT)",
+  usePrefix: true,
+  commandCategory: "ai",
+  cooldowns: 2
 };
 
-module.exports.run = async function ({ api, event, args }) {
-  const { threadID, messageID, messageReply, senderID } = event;
-  const prompt = args.join(" ") || (messageReply && messageReply.body);
+const OPENAI_API_KEY = "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";
 
-  if (!prompt) return api.sendMessage("❌ দয়া করে প্রশ্ন লিখুন বা কোনো মেসেজে reply করুন।", threadID, messageID);
-
-  // টাইপিং ইফেক্ট
-  api.sendTypingIndicator(threadID, true);
+module.exports.run = async function({ api, event, args }) {
+  const prompt = args.join(" ");
+  if (!prompt) return api.sendMessage("📝 প্রশ্ন লেখো যেমন: /ai বঙ্গবন্ধু কে?", event.threadID, event.messageID);
 
   try {
-    const hasImage = messageReply?.attachments?.[0]?.type === "photo";
-    let imageUrl;
-
-    if (hasImage) {
-      const photoStream = messageReply.attachments[0].url;
-      imageUrl = photoStream;
-    }
-
-    const body = hasImage
-      ? {
-          modelType: "text_and_image",
-          prompt,
-          imageParts: [imageUrl]
+    const res = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`
         }
-      : {
-          modelType: "text_only",
-          prompt
-        };
+      }
+    );
 
-    const res = await axios.post("https://gemini-ai-with-gemini-api-minipro-3r.vercel.app/google", body);
-    const result = res.data?.result;
-
-    if (!result) throw new Error("Gemini কোনো উত্তর দেয়নি!");
-
-    let msg = `👤 প্রশ্নকারী: fb.com/${senderID}\n📩 উত্তর:\n${result}`;
-
-    return api.sendMessage(msg, threadID, messageID);
+    const reply = res.data.choices[0].message.content.trim();
+    return api.sendMessage(`🤖 ${reply}`, event.threadID, event.messageID);
   } catch (err) {
-    console.log("❌ Gemini API error:", err);
-    return api.sendMessage("😥 দুঃখিত, Gemini থেকে উত্তর আনতে সমস্যা হচ্ছে।", threadID, messageID);
+    console.log("GPT ERROR:", err.message);
+    return api.sendMessage("😔 দুঃখিত, AI উত্তর দিতে পারছে না এই মুহূর্তে। পরে চেষ্টা করো।", event.threadID, event.messageID);
   }
 };
