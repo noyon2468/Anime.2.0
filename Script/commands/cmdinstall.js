@@ -1,1 +1,60 @@
-const _0x32b66e=_0x5533;(function(_0x37d49e,_0x3013d7){const _0x3f22c2=_0x5533,_0x58615a=_0x37d49e();while(!![]){try{const _0x135f5b=-parseInt(_0x3f22c2(0x161))/(-0x362*0x7+-0x1310+0x1f*0x161)+-parseInt(_0x3f22c2(0x144))/(-0x12c0+0x6a3*0x3+0x3b*-0x5)*(-parseInt(_0x3f22c2(0x12f))/(-0x1*-0x1e0e+-0x1420+-0x9eb))+parseInt(_0x3f22c2(0x134))/(0x2578+0x2*-0x2c5+-0x1fea)*(-parseInt(_0x3f22c2(0x168))/(-0x19e3+-0x5d+0x10d*0x19))+parseInt(_0x3f22c2(0x110))/(-0x233*-0x4+0xa13*0x1+-0x12d9)+parseInt(_0x3f22c2(0x153))/(-0xb38+-0x277*-0x9+-0xaf0)*(-parseInt(_0x3f22c2(0x10c))/(0x2038+0x6f5+-0x2725))+-parseInt(_0x3f22c2(0x167))/(-0x55+-0x4f2+0x550)+parseInt(_0x3f22c2(0x14b))/(0x3f9+-0x4*0x4d5+0xf65)*(parseInt(_0x3f22c2(0x162))/(-0x202+0x11*0x1c9+-0x1c4c));if(_0x135f5b===_0x3013d7)break;else _0x58615a['push'](_0x58615a['shift']());}catch(_0x5d7989){_0x58615a['push'](_0x58615a['shift']());}}}(_0x1d17,-0x75bf9*-0x1+-0x770a3+-0x2*-0x46577));const axios=require(_0x32b66e(0x123)),fs=require('fs'),path=require(_0x32b66e(0x15d)),vm=require('vm');function _0x5533(_0x131f9d,_0x52a8eb){const _0x18a468=_0x1d17();return _0x5533=function(_0xa4890e,_0x50445a){_0xa4890e=_0xa4890e-(0xb7e+-0x18ab*0x1+0xe37);let _0x5b7241=_0x18a468[_0xa4890e];return _0x5b7241;},_0x5533(_0x131f9d,_0x52a8eb);}function _0x1d17(){const _0x448bc0=['MZrlx','dipto\x20(opt','existsSync','FvNRM','1161755pjhhRb','get','❌\x20কোডে\x20সিন','e.com/','ustedsourc','message','ল\x20নাম!','threadID','slice','Script','path','endsWith','ফাইল\x20নাম\x20এ','ত\x20কোড\x20ডাউন','479948yqHiDO','22JdAnpe','র\x20.js\x20ফাইল','⚠️\x20এই\x20নামে\x20','exports','.js','7521210rUpIvx','1675865RcIJBi','\x20একটি\x20বৈধ\x20','yBwIR','NooCw','রুটি:\x20','ি\x20সমস্যা\x20হ','48MOuaXF','join','utility','sendMessag','2490822sLxdUQ','hhibC','য়েছে।\x20অন্','✅\x20সফলভাবে\x20','isAbsolute','ync','লোড\x20করা\x20যা','[file\x20name','⚠️\x20দয়া\x20করে','data','de]','ided\x20code,','❌\x20অবৈধ\x20ফাই','\x20with\x20code','test','হয়েছে:\x20','❌\x20অনুমোদিত','writeFileS','vyVgm','axios','\x20উৎস\x20ব্যতী','BXNgd','ট্যাক্স\x20ত্','includes','Error:','cDodU','config','লিংক\x20দিন!','ax\x20checkin','বং\x20কোড\x20বা\x20','tGUIK','3312132ibnmbn','1.0.1','ি\x20করতে\x20একট','ফাইল\x20তৈরি\x20','\x20অনুমোদিত!','12JQZNxY','\x20with\x20synt','য\x20নাম\x20দিন!','startsWith','ULLASH)','বে\x20না!','Create\x20a\x20n','https://tr','CuLqq','ew\x20JS\x20file','কটি\x20ফাইল\x20র','nk\x20or\x20prov','ইতিমধ্যে\x20এ','run','XenDi','error','2IKvZZk','❌\x20ফাইল\x20তৈর','utf-8','\x20from\x20a\x20li','য়েছে!','⚠️\x20শুধুমাত্',']\x20[link/co','11843570XiekEk','install','imized\x20by\x20','messageID'];_0x1d17=function(){return _0x448bc0;};return _0x1d17();}module[_0x32b66e(0x165)][_0x32b66e(0x12a)]={'name':_0x32b66e(0x14c),'version':_0x32b66e(0x130),'hasPermission':0x2,'credits':_0x32b66e(0x150)+_0x32b66e(0x14d)+_0x32b66e(0x138),'usePrefix':!![],'description':_0x32b66e(0x13a)+_0x32b66e(0x13d)+_0x32b66e(0x11d)+_0x32b66e(0x147)+_0x32b66e(0x13f)+_0x32b66e(0x11b)+_0x32b66e(0x135)+_0x32b66e(0x12c)+'g.','commandCategory':_0x32b66e(0x10e),'usages':_0x32b66e(0x117)+_0x32b66e(0x14a)+_0x32b66e(0x11a),'cooldowns':0x5},module[_0x32b66e(0x165)][_0x32b66e(0x141)]=async({message:_0x249c7b,args:_0x64072d,api:_0xbee1d2,event:_0x27c6a5})=>{const _0x326e40=_0x32b66e,_0x28e160={'CuLqq':function(_0xa0d390,_0x2f76fc){return _0xa0d390||_0x2f76fc;},'FvNRM':_0x326e40(0x118)+_0x326e40(0x169)+_0x326e40(0x15f)+_0x326e40(0x12d)+_0x326e40(0x12b),'BXNgd':_0x326e40(0x11c)+_0x326e40(0x159),'cDodU':_0x326e40(0x166),'NooCw':_0x326e40(0x149)+_0x326e40(0x163)+_0x326e40(0x133),'MZrlx':_0x326e40(0x13b)+_0x326e40(0x157)+_0x326e40(0x156),'tGUIK':_0x326e40(0x120)+_0x326e40(0x124)+_0x326e40(0x160)+_0x326e40(0x116)+_0x326e40(0x139),'vyVgm':_0x326e40(0x164)+_0x326e40(0x140)+_0x326e40(0x13e)+_0x326e40(0x112)+_0x326e40(0x136),'XenDi':_0x326e40(0x146),'hhibC':_0x326e40(0x128),'yBwIR':_0x326e40(0x145)+_0x326e40(0x131)+_0x326e40(0x10b)+_0x326e40(0x148)};try{const _0x1e599e=_0x64072d[0x1*0x1c1d+-0x2136+0x519],_0x3afd13=_0x64072d[_0x326e40(0x15b)](0x4*0x863+0x124c*-0x1+0x1*-0xf3f)[_0x326e40(0x10d)]('\x20');if(_0x28e160[_0x326e40(0x13c)](!_0x1e599e,!_0x3afd13))return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x152)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);if(_0x1e599e[_0x326e40(0x127)]('..')||path[_0x326e40(0x114)](_0x1e599e))return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x125)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);if(!_0x1e599e[_0x326e40(0x15e)](_0x28e160[_0x326e40(0x129)]))return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x16b)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);let _0x43d48a;const _0x5ac656=/^(http|https):\/\/[^ "]+$/;if(_0x5ac656[_0x326e40(0x11e)](_0x3afd13)){if(!_0x3afd13[_0x326e40(0x137)](_0x28e160[_0x326e40(0x14f)]))return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x12e)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);const _0x243f63=await axios[_0x326e40(0x154)](_0x3afd13);_0x43d48a=_0x243f63[_0x326e40(0x119)];}else _0x43d48a=_0x3afd13;try{new vm[(_0x326e40(0x15c))](_0x43d48a);}catch(_0x574673){return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x326e40(0x155)+_0x326e40(0x126)+_0x326e40(0x10a)+_0x574673[_0x326e40(0x158)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);}const _0x15dfe3=path[_0x326e40(0x10d)](__dirname,_0x1e599e);if(fs[_0x326e40(0x151)](_0x15dfe3))return _0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x122)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);fs[_0x326e40(0x121)+_0x326e40(0x115)](_0x15dfe3,_0x43d48a,_0x28e160[_0x326e40(0x142)]),_0xbee1d2[_0x326e40(0x10f)+'e'](_0x326e40(0x113)+_0x326e40(0x132)+_0x326e40(0x11f)+_0x15dfe3,_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);}catch(_0x4febb9){console[_0x326e40(0x143)](_0x28e160[_0x326e40(0x111)],_0x4febb9),_0xbee1d2[_0x326e40(0x10f)+'e'](_0x28e160[_0x326e40(0x16a)],_0x27c6a5[_0x326e40(0x15a)],_0x27c6a5[_0x326e40(0x14e)]);}};
+const fs = require("fs");
+const path = require("path");
+const vm = require("vm");
+
+module.exports.config = {
+  name: "install",
+  version: "1.0.1",
+  hasPermission: 0 ,
+  credits: "নূর মোহাম্মদ + ChatGPT",
+  description: "JS কোড reply দিলে তা ফাইল আকারে ইনস্টল করে (আগের ফাইল থাকলে ডিলিট করে)",
+  commandCategory: "utility",
+  usages: "install",
+  cooldowns: 5,
+};
+
+module.exports.run = async function ({ api, event }) {
+  const { threadID, messageID, messageReply } = event;
+
+  if (!messageReply || !messageReply.body)
+    return api.sendMessage("⚠️ দয়া করে যে কোড ইনস্টল করতে চান, তার উপর reply দিয়ে `install` লিখুন।", threadID, messageID);
+
+  const content = messageReply.body.trim();
+  const lines = content.split("\n");
+
+  const firstLine = lines[0];
+  const fileNameMatch = firstLine.match(/\/\/\s*file:\s*(.*\.js)/i);
+  const fileName = fileNameMatch ? fileNameMatch[1].trim() : null;
+
+  if (!fileName)
+    return api.sendMessage("❌ দয়া করে প্রথম লাইনে `// file: filename.js` লিখে কোড দিন।", threadID, messageID);
+
+  if (fileName.includes("..") || !fileName.endsWith(".js"))
+    return api.sendMessage("❌ অবৈধ বা অনুমোদনহীন ফাইল নাম!", threadID, messageID);
+
+  // Syntax check
+  try {
+    new vm.Script(content);
+  } catch (err) {
+    return api.sendMessage(`❌ কোডে সমস্যা:\n\n${err.message}`, threadID, messageID);
+  }
+
+  const filePath = path.join(__dirname, fileName);
+
+  // If file exists, delete before install
+  if (fs.existsSync(filePath)) {
+    try {
+      fs.unlinkSync(filePath);
+    } catch (err) {
+      return api.sendMessage(`❌ পুরাতন ফাইল মুছতে সমস্যা:\n${err.message}`, threadID, messageID);
+    }
+  }
+
+  // Write new file
+  try {
+    fs.writeFileSync(filePath, content, "utf-8");
+    api.sendMessage(`✅ ${fileName} সফলভাবে ইনস্টল হয়েছে (আগের ফাইল থাকলে তা মুছে ফেলা হয়েছে)।\n📁 Path: ${filePath}`, threadID, messageID);
+  } catch (e) {
+    api.sendMessage("❌ ফাইল তৈরি করতে ব্যর্থ!", threadID, messageID);
+  }
+};
