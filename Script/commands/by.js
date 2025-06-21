@@ -1,8 +1,8 @@
 module.exports.config = {
-  name: "by",
+  name: "leave",
   version: "1.0.1",
-  hasPermssion: 0,
-  credits: "নূর মোহাম্মদ x ChatGPT",
+  hasPermssion: 1,
+  credits: "নূর মোহাম্মদ",
   description: "Leave the group or remove someone, but only by নূর মোহাম্মদ",
   commandCategory: "Admin",
   usages: "/by [mention or ID]",
