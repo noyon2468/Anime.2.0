@@ -2,18 +2,24 @@ module.exports.config = {
   name: "acp",
   version: "1.0.0",
   hasPermssion: 1,
-  credits: "CYBER TEAM + Customized by ChatGPT",
+  credits: "CYBER TEAM + Customized by ChatGPT for Nur মোহাম্মদ",
   description: "Nur মোহাম্মদের মাধ্যমে Friend Request Accept/Delete",
   commandCategory: "bot id",
   usages: "uid",
   cooldowns: 0
 };
 
-const OWNER_ID = "100035389598342"; // Nur মোহাম্মদের আইডি
+const OWNER_ID = "100035389598342"; // 🔐 Nur মোহাম্মদ
 
 module.exports.handleReply = async ({ handleReply, event, api }) => {
-  const { author, listRequest } = handleReply;
-  if (event.senderID !== OWNER_ID) return api.sendMessage("❌ কেবল নূর মোহাম্মদ এই কমান্ড চালাতে পারবেন!", event.threadID);
+  const { listRequest } = handleReply;
+
+  if (event.senderID !== OWNER_ID) {
+    return api.sendMessage(
+      "🚫 শুধুমাত্র ✨ নূর মোহাম্মদ ✨ এই কমান্ড চালাতে পারবেন!\nতুমি তো কেবল প্রজা 🐸",
+      event.threadID
+    );
+  }
 
   const args = event.body.toLowerCase().split(" ");
   const form = {
@@ -31,16 +37,16 @@ module.exports.handleReply = async ({ handleReply, event, api }) => {
   };
 
   let action;
-  if (args[0] == "add") {
+  if (args[0] === "add") {
     form.fb_api_req_friendly_name = "FriendingCometFriendRequestConfirmMutation";
     form.doc_id = "3147613905362928";
     action = "accepted";
-  } else if (args[0] == "del") {
+  } else if (args[0] === "del") {
     form.fb_api_req_friendly_name = "FriendingCometFriendRequestDeleteMutation";
     form.doc_id = "4108254489275063";
     action = "deleted";
   } else {
-    return api.sendMessage("⚠️ Syntax: reply with `add` বা `del` + ক্রমিক সংখ্যা / all", event.threadID);
+    return api.sendMessage("⚠️ রিপ্লাই দিয়ে `add` বা `del` + ক্রমিক সংখ্যা / all লিখুন", event.threadID);
   }
 
   let targetIDs = args.slice(1);
@@ -69,13 +75,19 @@ module.exports.handleReply = async ({ handleReply, event, api }) => {
     form.variables = JSON.parse(form.variables);
   }
 
-  let msg = `✅ সফলভাবে ${action} ${success.length} জনের রিকোয়েস্ট:\n${success.join("\n")}`;
+  let msg = `✅ সফলভাবে ${action} হয়েছে ${success.length} জন:\n${success.join("\n")}`;
   if (failed.length > 0) msg += `\n❌ ব্যর্থ: ${failed.length} জন\n${failed.join("\n")}`;
+
   return api.sendMessage(msg, event.threadID);
 };
 
 module.exports.run = async ({ event, api }) => {
-  if (event.senderID !== OWNER_ID) return api.sendMessage("❌ কেবল নূর মোহাম্মদ এই কমান্ড ব্যবহার করতে পারেন!", event.threadID);
+  if (event.senderID !== OWNER_ID) {
+    return api.sendMessage(
+      "⚠️ এই কমান্ড চালাতে তোমার অনুমতি নেই!\nশুধুমাত্র ✨ নূর মোহাম্মদ ✨ এটা চালাতে পারবেন 💂‍♂️",
+      event.threadID
+    );
+  }
 
   const moment = require("moment-timezone");
   const form = {
@@ -88,14 +100,15 @@ module.exports.run = async ({ event, api }) => {
 
   const res = await api.httpPost("https://www.facebook.com/api/graphql/", form);
   const listRequest = JSON.parse(res).data.viewer.friending_possibilities.edges;
-  if (!listRequest.length) return api.sendMessage("😅 কোনো friend request নেই!", event.threadID);
 
-  let msg = "👤 Friend Request List:\n";
+  if (!listRequest.length) return api.sendMessage("😅 এখন কোনো friend request নেই!", event.threadID);
+
+  let msg = "👤 Friend Request তালিকা:\n";
   listRequest.forEach((user, i) => {
     msg += `\n${i + 1}. নাম: ${user.node.name}\nID: ${user.node.id}\nলিংক: ${user.node.url.replace("www.facebook", "fb")}\nসময়: ${moment(user.time * 1009).tz("Asia/Dhaka").format("DD/MM/YYYY hh:mm:ss A")}\n`;
   });
 
-  msg += "\n\n✅ রিপ্লাই দিন: `add 1` বা `del all` ইত্যাদি";
+  msg += "\n\n✅ রিপ্লাই দিন: `add 1` বা `del all`";
 
   return api.sendMessage(msg, event.threadID, (e, info) => {
     global.client.handleReply.push({
