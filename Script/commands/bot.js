@@ -1,21 +1,34 @@
-const fs = require("fs");
+const fs = require("fs-extra");
+const axios = require("axios");
+const path = __dirname + "/../../data/teach.json";
 
 module.exports.config = {
   name: "obot",
-  version: "1.0.0",
-  credits: "নূর মোহাম্মদ + ChatGPT",
-  description: "নূর মোহাম্মদের Obot system - smart no-prefix personality replies",
+  version: "3.0.0",
+  credits: "নূর মোহাম্মদ",
+  description: "নূর মোহাম্মদের Obot system - teach + fun + AI reply",
   hasPermssion: 0,
   usePrefix: false,
   commandCategory: "no-prefix",
-  usages: "auto reply",
-  cooldowns: 3
+  usages: "auto smart reply",
+  cooldowns: 2
 };
 
-module.exports.handleEvent = async function({ event, api }) {
+module.exports.handleEvent = async function ({ event, api }) {
   const msg = event.body?.toLowerCase();
-  if (!msg) return;
+  if (!msg || msg.length > 150) return;
 
+  // ========== ✅ Teach Reply Check ==========
+  let teachData = {};
+  if (fs.existsSync(path)) {
+    teachData = JSON.parse(fs.readFileSync(path));
+  }
+
+  if (teachData[msg]) {
+    return api.sendMessage(teachData[msg], event.threadID, event.messageID);
+  }
+
+  // ========== 😏 Fun Personality Replies ==========
   const tl = [
     "বেশি Bot Bot করলে leave নিবো কিন্তু 😒😒",
     "তুমি আমাকে প্রেম করাই দাও নি 😼🥺 পচা তুমি!",
@@ -75,13 +88,22 @@ module.exports.handleEvent = async function({ event, api }) {
     "কি'রে, group এ দেখি একটাও বেডি নাই! 🤦‍🥱💦"
   ];
 
-  // Trigger keywords
-  const triggerWords = ["bot", "bott", "obot", "ai", "🤖", "🙄", "😒", "নূর মোহাম্মদ", "Nur Muhammad"];
+  const triggerWords = ["bot", "bott", "obot", "ai", "🤖", "🙄", "😒", "নূর মোহাম্মদ", "nur muhammad"];
 
   if (triggerWords.some(word => msg.includes(word))) {
     const reply = tl[Math.floor(Math.random() * tl.length)];
     return api.sendMessage(reply, event.threadID, event.messageID);
   }
+
+  // ========== 🧠 AI Fallback ==========
+  try {
+    const res = await axios.get(`https://simsimi.fun/api/v2/?mode=talk&lang=bn&message=${encodeURIComponent(msg)}&filter=false`);
+    if (res?.data?.success) {
+      return api.sendMessage(`🤖 ${res.data.success}`, event.threadID, event.messageID);
+    }
+  } catch (err) {
+    return;
+  }
 };
 
-module.exports.run = () => {}; // Required, though unused
+module.exports.run = () => {};
