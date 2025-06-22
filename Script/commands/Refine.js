@@ -3,21 +3,20 @@ const fs = require("fs-extra");
 
 module.exports.config = {
   name: "refine",
-  version: "3.2.0",
+  version: "4.0.0",
   hasPermssion: 0,
   credits: "নূর মোহাম্মদ ",
-  description: "ছবিতে AI ইফেক্ট দিয়ে রিফাইন, bg/cartoon/hd/sketch/blu/enhance/remix/all",
+  description: "AI দিয়ে ছবি refine করুন (bg, cartoon, hd)",
   commandCategory: "image edit",
-  usages: "/refine [bg/cartoon/hd/blur/sketch/enhance/remix/all]",
-  cooldowns: 3,
+  usages: "reply + /refine [bg/cartoon/hd]",
+  cooldowns: 3
 };
 
 module.exports.run = async function ({ api, event, args }) {
-  const type = args[0]?.toLowerCase() || "enhance";
-  const supported = ["bg", "cartoon", "hd", "blur", "sketch", "enhance", "remix", "all"];
-
+  const type = args[0]?.toLowerCase();
+  const supported = ["bg", "cartoon", "hd"];
   if (!supported.includes(type)) {
-    return api.sendMessage("❌ refine অপশন দিন:\nbg, cartoon, hd, blur, sketch, enhance, remix, all", event.threadID, event.messageID);
+    return api.sendMessage("❌ refine কমান্ড:\n/refine bg\n/refine cartoon\n/refine hd", event.threadID, event.messageID);
   }
 
   let imageUrl;
@@ -27,49 +26,32 @@ module.exports.run = async function ({ api, event, args }) {
     imageUrl = event.attachments[0].url;
   }
 
-  if (!imageUrl) {
-    return api.sendMessage("❌ ছবিতে reply দিন অথবা ছবি পাঠিয়ে refine দিন!", event.threadID, event.messageID);
-  }
+  if (!imageUrl) return api.sendMessage("❌ একটি ছবিতে reply দিন।", event.threadID, event.messageID);
 
-  const allEdits = {
-    bg: { name: "Background Remove", url: `https://api-zylern.onrender.com/removebg?url=${encodeURIComponent(imageUrl)}` },
-    cartoon: { name: "Cartoon", url: `https://api-zylern.onrender.com/cartoon?url=${encodeURIComponent(imageUrl)}` },
-    hd: { name: "HD", url: `https://api-zylern.onrender.com/upscale?url=${encodeURIComponent(imageUrl)}` },
-    blur: { name: "Blur", url: `https://api-zylern.onrender.com/blur?url=${encodeURIComponent(imageUrl)}` },
-    sketch: { name: "Sketch", url: `https://api-zylern.onrender.com/sketch?url=${encodeURIComponent(imageUrl)}` },
-    enhance: { name: "Enhance", url: `https://api-zylern.onrender.com/enhance?url=${encodeURIComponent(imageUrl)}` },
-    remix: { name: "Remix", url: `https://api-zylern.onrender.com/remix?url=${encodeURIComponent(imageUrl)}` },
+  const apiUrls = {
+    bg: `https://photonify-api.onrender.com/removebg?url=${encodeURIComponent(imageUrl)}`,
+    cartoon: `https://photonify-api.onrender.com/cartoon?url=${encodeURIComponent(imageUrl)}`,
+    hd: `https://photonify-api.onrender.com/upscale?url=${encodeURIComponent(imageUrl)}`
   };
 
-  const doEdit = async (key) => {
-    const edit = allEdits[key];
-    const path = `${__dirname}/cache/${key}_${event.senderID}.png`;
-
-    try {
-      console.log(`[✅ REFINE] Trying: ${key.toUpperCase()} - ${edit.url}`);
-      const res = await axios.get(edit.url, { responseType: "arraybuffer", timeout: 15000 });
-
-      fs.writeFileSync(path, Buffer.from(res.data, "binary"));
-      console.log(`[✅ REFINE] Success: ${key.toUpperCase()}`);
-
-      await api.sendMessage({
-        body: `✅ ${edit.name}`,
-        attachment: fs.createReadStream(path)
-      }, event.threadID, () => fs.unlinkSync(path));
-    } catch (e) {
-      console.log(`[❌ REFINE ERROR] ${key.toUpperCase()} Failed!`);
-      console.log(`[❌ ERROR MESSAGE]:`, e.message);
-      await api.sendMessage(`❌ ${edit.name} করতে সমস্যা হয়েছে!\n🧩 ${e.message}`, event.threadID);
-    }
+  const names = {
+    bg: "Background Removed",
+    cartoon: "Cartoon Style",
+    hd: "HD/4K Enhanced"
   };
 
-  if (type === "all") {
-    api.sendMessage("🛠️ সব ইফেক্ট একে একে শুরু হচ্ছে, অপেক্ষা করুন...", event.threadID);
-    for (const key of Object.keys(allEdits)) {
-      await doEdit(key);
-    }
-  } else {
-    api.sendMessage(`🖌️ ${allEdits[type].name} করা হচ্ছে...`, event.threadID);
-    await doEdit(type);
+  const path = `${__dirname}/cache/refined_${event.senderID}.png`;
+
+  try {
+    const res = await axios.get(apiUrls[type], { responseType: "arraybuffer" });
+    fs.writeFileSync(path, Buffer.from(res.data, "binary"));
+
+    api.sendMessage({
+      body: `✅ ${names[type]}`,
+      attachment: fs.createReadStream(path)
+    }, event.threadID, () => fs.unlinkSync(path));
+  } catch (e) {
+    console.log(`❌ REFINE API ERROR: ${e.message}`);
+    api.sendMessage(`❌ ${names[type]} করতে সমস্যা হয়েছে!\n${e.message}`, event.threadID);
   }
 };
