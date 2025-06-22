@@ -1,7 +1,7 @@
 module.exports.config = {
   name: "acp",
   version: "1.0.0",
-  hasPermssion: 1,
+  hasPermssion: 0,
   credits: "CYBER TEAM + Customized by ChatGPT for Nur মোহাম্মদ",
   description: "Nur মোহাম্মদের মাধ্যমে Friend Request Accept/Delete",
   commandCategory: "bot id",
