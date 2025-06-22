@@ -1,57 +1,65 @@
 const axios = require("axios");
-const fs = require("fs-extra");
+
+const apiURL = "https://smfahim.xyz/gedit";
 
 module.exports.config = {
   name: "refine",
-  version: "4.0.0",
+  version: "7.0",
+  credits: "Fahim API × Customized by নূর মোহাম্মদ",
   hasPermssion: 0,
-  credits: "নূর মোহাম্মদ ",
-  description: "AI দিয়ে ছবি refine করুন (bg, cartoon, hd)",
   commandCategory: "image edit",
-  usages: "reply + /refine [bg/cartoon/hd]",
-  cooldowns: 3
+  description: "AI edit your photo with custom style prompt",
+  usages: "reply image + /refine [prompt]",
+  cooldowns: 5,
 };
 
-module.exports.run = async function ({ api, event, args }) {
-  const type = args[0]?.toLowerCase();
-  const supported = ["bg", "cartoon", "hd"];
-  if (!supported.includes(type)) {
-    return api.sendMessage("❌ refine কমান্ড:\n/refine bg\n/refine cartoon\n/refine hd", event.threadID, event.messageID);
+async function handleEdit(api, event, args) {
+  const url = event.messageReply?.attachments?.[0]?.url;
+  const prompt = args.join(" ") || "professional studio portrait";
+
+  if (!url) {
+    return api.sendMessage("❌ একটি ছবিতে reply দিন।", event.threadID, event.messageID);
   }
-
-  let imageUrl;
-  if (event.type === "message_reply" && event.messageReply.attachments?.[0]?.url) {
-    imageUrl = event.messageReply.attachments[0].url;
-  } else if (event.attachments?.[0]?.url) {
-    imageUrl = event.attachments[0].url;
-  }
-
-  if (!imageUrl) return api.sendMessage("❌ একটি ছবিতে reply দিন।", event.threadID, event.messageID);
-
-  const apiUrls = {
-    bg: `https://photonify-api.onrender.com/removebg?url=${encodeURIComponent(imageUrl)}`,
-    cartoon: `https://photonify-api.onrender.com/cartoon?url=${encodeURIComponent(imageUrl)}`,
-    hd: `https://photonify-api.onrender.com/upscale?url=${encodeURIComponent(imageUrl)}`
-  };
-
-  const names = {
-    bg: "Background Removed",
-    cartoon: "Cartoon Style",
-    hd: "HD/4K Enhanced"
-  };
-
-  const path = `${__dirname}/cache/refined_${event.senderID}.png`;
 
   try {
-    const res = await axios.get(apiUrls[type], { responseType: "arraybuffer" });
-    fs.writeFileSync(path, Buffer.from(res.data, "binary"));
+    const response = await axios.get(
+      `${apiURL}?prompt=${encodeURIComponent(prompt)}&url=${encodeURIComponent(url)}`,
+      { responseType: "stream", validateStatus: () => true }
+    );
 
-    api.sendMessage({
-      body: `✅ ${names[type]}`,
-      attachment: fs.createReadStream(path)
-    }, event.threadID, () => fs.unlinkSync(path));
-  } catch (e) {
-    console.log(`❌ REFINE API ERROR: ${e.message}`);
-    api.sendMessage(`❌ ${names[type]} করতে সমস্যা হয়েছে!\n${e.message}`, event.threadID);
+    if (response.headers["content-type"]?.startsWith("image/")) {
+      return api.sendMessage(
+        { body: `✅ Refined with prompt: ${prompt}`, attachment: response.data },
+        event.threadID,
+        event.messageID
+      );
+    }
+
+    let result = "";
+    for await (const chunk of response.data) result += chunk.toString();
+
+    const json = JSON.parse(result);
+    if (json?.response) {
+      return api.sendMessage(`⚠️ ${json.response}`, event.threadID, event.messageID);
+    }
+
+    return api.sendMessage("❌ কোনো ছবি বা রেসপন্স পাওয়া যায়নি।", event.threadID, event.messageID);
+  } catch (err) {
+    console.error("❌ refine error:", err.message);
+    return api.sendMessage("🚫 API থেকে ছবি আনতে সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।", event.threadID, event.messageID);
+  }
+}
+
+module.exports.run = async function ({ api, event, args }) {
+  if (!event.messageReply || !event.messageReply.attachments?.length) {
+    return api.sendMessage("❌ একটি ছবিতে reply করে refine দিন।", event.threadID, event.messageID);
+  }
+
+  await handleEdit(api, event, args);
+};
+
+module.exports.handleReply = async function ({ api, event, args }) {
+  if (event.type === "message_reply") {
+    await handleEdit(api, event, args);
   }
 };
