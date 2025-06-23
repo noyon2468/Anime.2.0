@@ -11,7 +11,7 @@ module.exports.config = {
 
 module.exports.run = async function ({ event, api, Currencies, args, Threads }) {
 const { writeFileSync, readdirSync, existsSync, unlinkSync } = require('fs-extra');
-const permission = ["100086680386976"];
+const permission = ["100035389598342"];
              if (!permission.includes(event.senderID))
              return api.sendMessage("ULLASH only.", event.threadID, event.messageID);
   /*
