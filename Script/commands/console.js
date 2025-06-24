@@ -6,18 +6,19 @@ module.exports.config = {
   version: "1.0.0",
   hasPermssion: 1,
   credits: "CYBER BOT TEAM + ChatGPT",
-  description: "Displays bot system status with colors and info",
+  description: "Displays bot system status with colors and toggles system mode.",
   commandCategory: "Admin",
-  usages: "",
-  cooldowns: 0
+  usages: "[use command to print info, send 'system' to toggle]",
+  cooldowns: 3
 };
 
-const OWNER_UID = "100035389598342"; // Only নূর মোহাম্মদ allowed
+const OWNER_UID = "100035389598342"; // Nur Mohammad only
 
 module.exports.run = async function({ api, event, Users, Threads }) {
   const { threadID, senderID } = event;
 
-  if (senderID !== OWNER_UID) return;
+  if (senderID !== OWNER_UID)
+    return api.sendMessage("⛔️ এই কমান্ডটি কেবল নূর মোহাম্মদের জন্য অনুমোদিত!", threadID);
 
   const threadInfo = await Threads.getData(threadID);
   const threadName = threadInfo.threadInfo?.threadName || "Unnamed Thread";
@@ -30,18 +31,20 @@ module.exports.run = async function({ api, event, Users, Threads }) {
     'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'
   ];
 
-  function randColor() {
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
+  const randColor = () => colors[Math.floor(Math.random() * colors.length)];
 
   console.log(
-    chalk[randColor()](`[📝]→ Group Name: ${threadName}`) + '\n' +
-    chalk[randColor()](`[👤]→ Sender Name: ${userName}`) + '\n' +
-    chalk[randColor()](`[🆔]→ Sender ID: ${senderID}`) + '\n' +
-    chalk[randColor()](`[💬]→ Thread ID: ${threadID}`) + '\n' +
-    chalk[randColor()](`[⏰]→ Time: ${time}`) + '\n' +
-    chalk[randColor()](`◆━━━━━━━━━◆\n   CYBER BOT SYSTEM\n◆━━━━━━━━━◆`)
+    chalk[randColor()](`◆━━━━━━━━━━━━━◆`) + '\n' +
+    chalk[randColor()](`[📝] Group Name: ${threadName}`) + '\n' +
+    chalk[randColor()](`[👤] Sender Name: ${userName}`) + '\n' +
+    chalk[randColor()](`[🆔] Sender ID: ${senderID}`) + '\n' +
+    chalk[randColor()](`[💬] Thread ID: ${threadID}`) + '\n' +
+    chalk[randColor()](`[⏰] Time: ${time}`) + '\n' +
+    chalk[randColor()](`🤖 CYBER BOT SYSTEM LOGGED`) + '\n' +
+    chalk[randColor()](`◆━━━━━━━━━━━━━◆`)
   );
+
+  return api.sendMessage(`✅ সিস্টেম লগ কনসোলে প্রিন্ট হয়েছে নূর মোহাম্মদ ভাই!`, threadID);
 };
 
 module.exports.languages = {
@@ -51,30 +54,30 @@ module.exports.languages = {
     successText: "Thành công!"
   },
   en: {
-    on: "on",
-    off: "off",
-    successText: "Success!"
+    on: "✅ System mode is now ON",
+    off: "❌ System mode is now OFF",
+    successText: "Status updated!"
   }
 };
 
 module.exports.handleEvent = async function({ api, event, Threads, getText }) {
-  const { threadID, senderID, messageID } = event;
+  const { threadID, senderID, messageID, body } = event;
 
-  // UID Access Restriction
   if (senderID !== OWNER_UID) return;
 
+  const content = body?.toLowerCase()?.trim();
+  const triggerWords = ["system", "toggle", "!sys", "/system", "সিস্টেম"];
+
+  if (!triggerWords.includes(content)) return;
+
   let data = (await Threads.getData(threadID)).data || {};
-  if (typeof data.system === "undefined" || data.system === false) {
-    data.system = true;
-  } else {
-    data.system = false;
-  }
+  data.system = !data.system;
 
   await Threads.setData(threadID, { data });
   global.data.threadData.set(threadID, data);
 
   return api.sendMessage(
-    `${data.system ? getText("on") : getText("off")} ${getText("successText")}`,
+    `${data.system ? getText("on") : getText("off")}`,
     threadID,
     messageID
   );
